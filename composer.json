@@ -1,0 +1,15 @@
+{
+    "name": "clippings/composer-init",
+    "description": "Initialize a composer package based on a template package",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Ivan Kerin",
+            "email": "ikerin@gmail.com",
+            "role": "Author"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"CL\\ComposerInit\\": "src/"}
+    },
+}
