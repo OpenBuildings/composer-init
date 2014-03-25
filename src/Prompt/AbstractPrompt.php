@@ -37,6 +37,8 @@ abstract class AbstractPrompt
 
     public function getValuesForResponse($response)
     {
-        return array($this->getName() => $response);
+        return array(
+            $this->getName() => $response
+        );
     }
 }

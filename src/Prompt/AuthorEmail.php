@@ -18,6 +18,8 @@ class AuthorEmail extends AbstractPrompt
 
     public function getDefaults(TemplateHelper $template)
     {
-        return array($template->getGitConfig('user.email'));
+        return array(
+            $template->getGitConfig('user.email')
+        );
     }
 }

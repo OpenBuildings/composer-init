@@ -2,10 +2,10 @@
 
 namespace CL\ComposerInit;
 
-use CL\ComposerInit\GitHub;
 use CL\ComposerInit\Prompt\AbstractPrompt;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Application;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -15,6 +15,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 class TemplateHelper extends Helper
 {
     protected $repo;
+    protected $organization;
+    protected $owner;
+    protected $application;
+
+    public function setApplication(Application $application)
+    {
+        $this->application = $application;
+        return $this;
+    }
+
+    public function getApplication()
+    {
+        return $this->application;
+    }
 
     public function getName()
     {
@@ -24,7 +38,7 @@ class TemplateHelper extends Helper
     public function retrieveParams(OutputInterface $output, array $params)
     {
         $values = array(
-            'repository_name' => $this->getRepo()->getFullName(),
+            'repository_name' => $this->getRepoField('full_name'),
         );
 
         foreach ($params as $param)
@@ -44,26 +58,21 @@ class TemplateHelper extends Helper
     {
         $output->writeln("<info>Downloading:</info> $url");
 
-        $bar = $this->getHelperSet()->get('progress');
-        $bar->start($output, 1);
+        Curl::download($url, $file);
 
-        Curl::download($url, $file, function($progress) use ($bar) {
-            $bar->setCurrent($progress);
-        });
-
-        $bar->finish();
+        $output->writeln("<info>Done.</info>");
     }
 
     public function confirmValues(OutputInterface $output, array $values)
     {
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $valuesDisplay = "\nUse These Variables: \n";
+        $valuesDisplay = "Use These Variables:\n";
         foreach ($values as $key => $value)
         {
             $valuesDisplay .= "  <info>$key</info>: $value\n";
         }
-        $valuesDisplay .= "Confirm? <comment>(Y/n)</comment> ";
+        $valuesDisplay .= "Confirm? <comment>(Y/n)</comment>:";
 
         return $dialog->askConfirmation(
             $output,
@@ -77,6 +86,21 @@ class TemplateHelper extends Helper
         return trim(`git config {$name}`);
     }
 
+    public function getGithub()
+    {
+        return $this->getApplication()->getGithub();
+    }
+
+    public function showGithubRepo($user, $name)
+    {
+        return $this->getGithub()->api('repo')->show($user, $name);
+    }
+
+    public function showGithubUser($login)
+    {
+        return $this->getGithub()->api('user')->show($login);
+    }
+
     public function getRepo()
     {
         if ( ! $this->repo)
@@ -85,10 +109,45 @@ class TemplateHelper extends Helper
 
             if ($origin)
             {
-                $this->repo = GitHub\Repo::newFromOrigin($origin);
+                preg_match('/^git@github.com:(.*)\/(.*).git$/', $origin, $matches);
+
+                $this->repo = $this->showGithubRepo($matches[1], $matches[2]);
             }
         }
 
         return $this->repo;
+    }
+
+    public function getRepoField($field)
+    {
+        $repo = $this->getRepo();
+
+        return isset($repo[$field]) ? $repo[$field] : null;
+    }
+
+    public function getOrganization()
+    {
+        if ( ! $this->organization)
+        {
+            if (($organization = $this->getRepoField('organization')))
+            {
+                $this->organization = $this->showGithubUser($organization['login']);
+            }
+        }
+
+        return $this->organization;
+    }
+
+    public function getOwner()
+    {
+        if ( ! $this->owner)
+        {
+            if (($owner = $this->getRepoField('owner')))
+            {
+                $this->owner = $this->showGithubUser($owner['login']);
+            }
+        }
+
+        return $this->owner;
     }
 }

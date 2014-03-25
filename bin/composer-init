@@ -8,12 +8,8 @@ if (file_exists($a = __DIR__.'/../../../autoload.php')) {
     require_once __DIR__.'/../vendor/autoload.php';
 }
 
-use CL\ComposerInit\SearchCommand;
-use CL\ComposerInit\UseCommand;
-use Symfony\Component\Console\Application;
+use CL\ComposerInit\ComposerInitApplication;
 
-$application = new Application('Composer Init', '@package_version@');
-$application->add(new SearchCommand());
-$application->add(new UseCommand());
+$application = new ComposerInitApplication('Composer Init', '@package_version@');
 
 $application->run();

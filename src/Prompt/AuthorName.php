@@ -18,6 +18,8 @@ class AuthorName extends AbstractPrompt
 
     public function getDefaults(TemplateHelper $template)
     {
-        return array($template->getGitConfig('user.name'));
+        return array(
+            $template->getGitConfig('user.name')
+        );
     }
 }

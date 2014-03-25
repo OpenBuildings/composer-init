@@ -18,6 +18,8 @@ class Bugs extends AbstractPrompt
 
     public function getDefaults(TemplateHelper $template)
     {
-        return array($template->getRepo()->getHtmlUrl().'/issues/new');
+        return array(
+            $template->getRepoField('html_url').'/issues/new'
+        );
     }
 }

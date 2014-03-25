@@ -11,7 +11,7 @@ class InflectorTest extends AbstractTestCase
         return array(
             array('OpenBuildings', 'OB'),
             array('Clippings', 'CL'),
-            array('Despark', 'DP'),
+            array('Despark', 'DE'),
         );
     }
 

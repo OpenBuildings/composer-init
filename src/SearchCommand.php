@@ -7,7 +7,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CL\ComposerInit\Packagist;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -31,17 +30,25 @@ class SearchCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $search = new Packagist\Search('composer-init-template', $input->getArgument('name'));
+        $json = Curl::getJSON('https://packagist.org/packages/packages/list.json?q=composer-init-template');
 
+        $templates = $json['packageNames'];
 
-        if (! count($search->getResults()))
+        if (($query = $input->getArgument('name')))
+        {
+            $templates = array_filter($json['packageNames'], function($name) use ($query) {
+                return strpos($name, $query) !== false;
+            });
+        }
+
+        if (! count($templates))
         {
             $output->writeln("<error>No templates found</error>");
         }
         else
         {
             $output->writeln('Available Init Templates:');
-            foreach ($search->getResults() as $package) {
+            foreach ($templates as $package) {
                 $output->writeln("  <info>{$package}</info>");
             }
         }

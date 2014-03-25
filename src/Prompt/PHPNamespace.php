@@ -19,7 +19,7 @@ class PHPNamespace extends AbstractPrompt
 
     public function getDefaults(TemplateHelper $template)
     {
-        list($vendor, $name) = explode('/', $template->getRepo()->getFullName());
+        list($vendor, $name) = explode('/', $template->getRepoField('full_name'));
 
         return array(
             Inflector::titlecase($vendor).'\\'.Inflector::titlecase($name),

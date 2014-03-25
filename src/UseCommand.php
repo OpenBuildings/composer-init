@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use CL\ComposerInit\Packagist;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use DirectoryIterator;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -24,29 +25,26 @@ class UseCommand extends Command
             ->setName('use')
             ->setDescription('List available composer init templates')
             ->addArgument(
-                'name',
+                'package',
                 InputArgument::REQUIRED,
                 'Package Name'
             )
             ->addArgument(
                 'release',
                 InputArgument::OPTIONAL,
-                'The version to use, e.g. dev-master'
+                'The version to use, e.g. dev-master',
+                'dev-master'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $template = new TemplateHelper();
-        $this->getHelperSet()->set($template);
+        $template = $this->getHelperSet()->get('template');
 
-        $packageName = $input->getArgument('name');
-
-        $package = new Packagist\Repo($packageName);
+        $distUrl = $this->getDistUrl($input->getArgument('package'), $input->getArgument('release'));
 
         $tempFile = tempnam(sys_get_temp_dir(), 'package');
-
-        $template->download($output, $tempFile, $package->getDistUrl());
+        $template->download($output, $tempFile, $distUrl);
 
         $zip = new ZipArchive();
         $zip->open($tempFile);
@@ -55,10 +53,16 @@ class UseCommand extends Command
         $output->writeln('Enter Template variables (Press enter for default):');
         $values = Template::getTemplateValues($output, $template);
 
+        $output->writeln();
+
         if ($template->confirmValues($output, $values))
         {
             $zip->extractDirTo($zip->getRootDir().'root', '.');
             $this->setTemplateVariables($zip->getRootDir().'root', $values);
+
+            $this->moveFiles($zip->getRootDir().'root', '.');
+            rmdir($zip->getRootDir().'root');
+            rmdir($zip->getRootDir());
         }
         else
         {
@@ -66,8 +70,27 @@ class UseCommand extends Command
         }
 
         $zip->close();
+        unlink($tempFile);
 
         $output->writeln('Done');
+    }
+
+    public function moveFiles($from, $to)
+    {
+        $iterator = new DirectoryIterator($zip->getRootDir().'root');
+        foreach ($iterator as $fileinfo) {
+            if (! $fileinfo->isDot())
+            {
+                rename($fileinfo->getPathname(), str_replace($from.DIRECTORY_SEPARATOR, $to.DIRECTORY_SEPARATOR, $fileinfo->getPathname()));
+            }
+        }
+    }
+
+    public function getDistUrl($package_name, $release)
+    {
+        $json = Curl::getJSON("https://packagist.org/packages/{$package_name}.json");
+
+        return $json['package']['versions'][$release]['dist']['url'];
     }
 
     public function setTemplateVariables($directory, $values)

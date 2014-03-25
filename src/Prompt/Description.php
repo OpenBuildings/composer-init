@@ -18,6 +18,8 @@ class Description extends AbstractPrompt
 
     public function getDefaults(TemplateHelper $template)
     {
-        return array($template->getRepo()->getDescription());
+        return array(
+            $template->getRepoField('description')
+        );
     }
 }

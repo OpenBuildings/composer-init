@@ -19,9 +19,15 @@ class Copyright extends AbstractPrompt
 
     public function getDefaults(TemplateHelper $template)
     {
+        $organization = $template->getOrganization();
+        $owner = $template->getOwner();
+
+        $organizationName = isset($organization['name']) ? $organization['name'] : null;
+        $ownerName = isset($owner['name']) ? $owner['name'] : null;
+
         return array(
-            date('Y').', '.$template->getRepo()->getOrganizationName(),
-            date('Y').', '.$template->getRepo()->getOwnerName(),
+            date('Y').', '.$organizationName,
+            date('Y').', '.$ownerName,
         );
     }
 

@@ -13,7 +13,10 @@
     "require": {
         "php": ">=5.3.6",
         "symfony/console": "~2.1",
-        "herrera-io/phar-update": "~2.0"
+        "knplabs/github-api": "~1.2"
+    },
+    "require-dev": {
+        "clippings/env-backup": "~0.2.2"
     },
     "autoload": {
         "psr-4": {"CL\\ComposerInit\\": "src/"}
