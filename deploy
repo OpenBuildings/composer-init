@@ -45,6 +45,6 @@ file_put_contents('manifest.json', json_encode($manifest, JSON_PRETTY_PRINT));
 
 `git checkout master`;
 
-echo "New version created. Now you should run:"
-echo "git push origin gh-pages"
+echo "New version created. Now you should run:";
+echo "git push origin gh-pages";
 echo "git push {$tag}";
