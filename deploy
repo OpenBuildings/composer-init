@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+
+
+if ($argc < 2) {
+    echo "Usage deploy 'tag'";
+}
+
+$tag = $argv[1];
+$name = 'composer-init';
+$release = "composer-init-{$tag}.phar";
+$repo = "http://clippings.github.io/{$name}";
+
+`git checkout master`;
+`git tag $tag`;
+`box build`;
+
+`git checkout gh-pages`;
+
+mkdir('downloads', 0777, TRUE);
+mkdir('pubkeys', 0777, TRUE);
+
+$key = sha1(file_get_contents("{$name}.phar"));
+
+file_put_contents("pubkeys/{$release}.pubkey", $key);
+
+`mv {$name}.phar downloads/{$release}`;
+`git add downloads/{$release}`;
+`git add pubkeys/{$release}.pubkey`;
+
+$manifest = is_file('manifest.json') ? json_decode(file_get_contents('manifest.json'), TRUE) : array();
+
+$manifest []= array(
+    'name' => "{$name}.phar",
+    'sha1' => $sha1,
+    'url' => "{$repo}/downloads/{$release}",
+    'version' => $tag,
+    'publicKey' => "{$repo}/downloads/{$release}.pubkey"
+);
+
+file_put_contents('manifest.json', json_encode($manifest, JSON_PRETTY_PRINT));
+
+`git add manifest.json`;
+`git commit -m "Bump version {$tag}"`;
+
+`git checkout master`;
+
+echo "New version created. Now you should run:"
+echo "git push origin gh-pages"
+echo "git push {$tag}";

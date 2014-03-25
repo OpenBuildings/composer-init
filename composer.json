@@ -1,5 +1,6 @@
 {
     "name": "clippings/composer-init",
+    "type": "application",
     "description": "Initialize a composer package based on a template package",
     "license": "BSD-3-Clause",
     "authors": [
@@ -9,7 +10,13 @@
             "role": "Author"
         }
     ],
+    "require": {
+        "php": ">=5.3.6",
+        "symfony/console": "~2.1",
+        "herrera-io/phar-update": "~2.0"
+    },
     "autoload": {
         "psr-4": {"CL\\ComposerInit\\": "src/"}
     },
+    "bin": ["composer-init"]
 }
