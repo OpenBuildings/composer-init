@@ -1,0 +1,9 @@
+[
+    {
+        "name": "composer-init.phar",
+        "sha1": "964953ed5d8ba244e2276ad38f2387eb37f6114a",
+        "url": "http:\/\/clippings.github.io\/composer-init\/downloads\/composer-init-0.1.1.phar",
+        "version": "0.1.1",
+        "publicKey": "http:\/\/clippings.github.io\/composer-init\/downloads\/composer-init-0.1.1.phar.pubkey"
+    }
+]
