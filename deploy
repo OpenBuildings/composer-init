@@ -17,8 +17,13 @@ $repo = "http://clippings.github.io/{$name}";
 
 `git checkout gh-pages`;
 
-mkdir('downloads', 0777, TRUE);
-mkdir('pubkeys', 0777, TRUE);
+if ( ! is_dir('downloads')) {
+    mkdir('downloads');
+}
+
+if ( ! is_dir('pubkeys')) {
+    mkdir('pubkeys');
+}
 
 $key = sha1(file_get_contents("{$name}.phar"));
 
@@ -32,7 +37,7 @@ $manifest = is_file('manifest.json') ? json_decode(file_get_contents('manifest.j
 
 $manifest []= array(
     'name' => "{$name}.phar",
-    'sha1' => $sha1,
+    'sha1' => $key,
     'url' => "{$repo}/downloads/{$release}",
     'version' => $tag,
     'publicKey' => "{$repo}/downloads/{$release}.pubkey"
@@ -45,6 +50,6 @@ file_put_contents('manifest.json', json_encode($manifest, JSON_PRETTY_PRINT));
 
 `git checkout master`;
 
-echo "New version created. Now you should run:";
-echo "git push origin gh-pages";
-echo "git push {$tag}";
+echo "New version created. Now you should run:\n";
+echo "git push origin gh-pages\n";
+echo "git push {$tag}\n";
