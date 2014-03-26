@@ -130,6 +130,27 @@ OUTPUT;
 
         $this->assertEquals($expected, $repo);
         $this->assertEquals($expected, $repo);
+
+
+        $expected = array('repo');
+        $template = $this->getMock('CL\ComposerInit\TemplateHelper', array('getGitConfig', 'showGithubRepo'));
+
+        $template
+            ->expects($this->once())
+            ->method('getGitConfig')
+            ->with($this->equalTo('remote.origin.url'))
+            ->will($this->returnValue('https://github.com:clippings/composer-init.git'));
+
+        $template
+            ->expects($this->once())
+            ->method('showGithubRepo')
+            ->with($this->equalTo('clippings'), $this->equalTo('composer-init'))
+            ->will($this->returnValue($expected));
+
+        $repo = $template->getRepo();
+
+        $this->assertEquals($expected, $repo);
+        $this->assertEquals($expected, $repo);
     }
 
     /**

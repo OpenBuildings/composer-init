@@ -148,7 +148,7 @@ class TemplateHelper extends Helper
             $origin = $this->getGitConfig('remote.origin.url');
 
             if ($origin) {
-                preg_match('/^git@github.com:(.*)\/(.*).git$/', $origin, $matches);
+                preg_match('/^.*github.com:(.*)\/(.*).git$/', $origin, $matches);
 
                 $this->repo = $this->showGithubRepo($matches[1], $matches[2]);
             }
