@@ -66,17 +66,6 @@ class Curl
         return $data === null ? array() : $data;
     }
 
-    public static function post($url, array $data)
-    {
-        $options = array(
-            CURLOPT_URL => $url,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($data),
-        );
-
-        return self::execute($options);
-    }
-
     public static function download($url, $to)
     {
         $file = fopen($to, 'w');
