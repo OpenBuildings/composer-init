@@ -55,7 +55,11 @@ class ComposerInitApplication extends Application
 
     public function setConfig(array $config)
     {
-        file_put_contents($this->getConfigFile(), json_encode($config, JSON_PRETTY_PRINT));
+        $content = defined('JSON_PRETTY_PRINT')
+            ? json_encode($config, JSON_PRETTY_PRINT)
+            : json_encode($config);
+
+        file_put_contents($this->getConfigFile(), $content);
 
         return $this;
     }
