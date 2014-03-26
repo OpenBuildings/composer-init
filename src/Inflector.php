@@ -2,8 +2,8 @@
 
 namespace CL\ComposerInit;
 
-class Inflector {
-
+class Inflector
+{
     /**
      * Makes an underscored or dashed phrase human-readable.
      *
@@ -33,12 +33,11 @@ class Inflector {
         $title = self::title($str);
 
         $initials = str_replace(' ', '', preg_replace('/[a-z]/', '', $title));
-        if (strlen($initials) == 1)
-        {
+
+        if (strlen($initials) == 1) {
             $initials .= strtoupper($title[1]);
         }
 
         return $initials;
     }
-
 }

@@ -38,5 +38,4 @@ class Copyright extends AbstractPrompt
             $this->getName().'_entity' => preg_replace('/^[\d\s\-,\.]+/', '', $response),
         );
     }
-
 }

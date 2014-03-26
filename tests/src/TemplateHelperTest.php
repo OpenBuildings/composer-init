@@ -3,6 +3,7 @@
 namespace CL\ComposerInit\Test;
 
 use CL\ComposerInit\TemplateHelper;
+use CL\ComposerInit\ComposerInitApplication;
 use Symfony\Component\Console\Application;
 use stdClass;
 
@@ -16,10 +17,9 @@ class TemplateHelperTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->template = new TemplateHelper();
-        $this->application = new Application();
-        $this->application->getHelperSet()->set($this->template);
-        $this->template->setHelperSet($this->application->getHelperSet());
+        $this->application = new ComposerInitApplication();
+        $this->template = $this->application->getHelperSet()->get('template');
+
         $this->output = new DummyOutput();
     }
 
@@ -29,13 +29,13 @@ class TemplateHelperTest extends AbstractTestCase
      */
     public function testApplication()
     {
-        $application = new Application();
+        $template = new TemplateHelper();
 
-        $this->assertNull($this->template->getApplication());
+        $this->assertNull($template->getApplication());
 
-        $this->template->setApplication($application);
+        $template->setApplication($this->application);
 
-        $this->assertSame($application, $this->template->getApplication());
+        $this->assertSame($this->application, $template->getApplication());
     }
 
     /**
@@ -138,7 +138,7 @@ OUTPUT;
     public function testGetGithub()
     {
         $expected = new stdClass();
-        $application = $this->getMock('Symfony\Component\Console\Application', array('getGithub'));
+        $application = $this->getMock('CL\ComposerInit\ComposerInitApplication', array('getGithub'));
 
         $application
             ->expects($this->once())

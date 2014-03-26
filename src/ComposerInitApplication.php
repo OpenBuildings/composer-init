@@ -79,13 +79,11 @@ class ComposerInitApplication extends Application
 
     public function getGithub()
     {
-        if ( ! $this->github)
-        {
+        if (! $this->github) {
             $this->github = new \Github\Client();
 
-            if (($token = $this->getGithubToken()))
-            {
-                $this->github->authenticate($token, NULL, \Github\Client::AUTH_HTTP_TOKEN);
+            if (($token = $this->getGithubToken())) {
+                $this->github->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
             }
         }
 

@@ -19,7 +19,7 @@ class TemplateHelper extends Helper
     protected $owner;
     protected $application;
 
-    public function setApplication(Application $application)
+    public function setApplication(ComposerInitApplication $application)
     {
         $this->application = $application;
         return $this;
@@ -41,10 +41,8 @@ class TemplateHelper extends Helper
             'repository_name' => $this->getRepoField('full_name'),
         );
 
-        foreach ($params as $param)
-        {
-            if (! ($param instanceof AbstractPrompt))
-            {
+        foreach ($params as $param) {
+            if (! ($param instanceof AbstractPrompt)) {
                 throw new InvalidArgumentException('All params must be instances of AbstractPrompt');
             }
 
@@ -68,8 +66,7 @@ class TemplateHelper extends Helper
         $dialog = $this->getHelperSet()->get('dialog');
 
         $valuesDisplay = "Use These Variables:\n";
-        foreach ($values as $key => $value)
-        {
+        foreach ($values as $key => $value) {
             $valuesDisplay .= "  <info>$key</info>: $value\n";
         }
         $valuesDisplay .= "Confirm? <comment>(Y/n)</comment>:";
@@ -103,12 +100,10 @@ class TemplateHelper extends Helper
 
     public function getRepo()
     {
-        if ( ! $this->repo)
-        {
+        if (! $this->repo) {
             $origin = $this->getGitConfig('remote.origin.url');
 
-            if ($origin)
-            {
+            if ($origin) {
                 preg_match('/^git@github.com:(.*)\/(.*).git$/', $origin, $matches);
 
                 $this->repo = $this->showGithubRepo($matches[1], $matches[2]);
@@ -127,10 +122,8 @@ class TemplateHelper extends Helper
 
     public function getOrganization()
     {
-        if ( ! $this->organization)
-        {
-            if (($organization = $this->getRepoField('organization')))
-            {
+        if (! $this->organization) {
+            if (($organization = $this->getRepoField('organization'))) {
                 $this->organization = $this->showGithubUser($organization['login']);
             }
         }
@@ -140,10 +133,8 @@ class TemplateHelper extends Helper
 
     public function getOwner()
     {
-        if ( ! $this->owner)
-        {
-            if (($owner = $this->getRepoField('owner')))
-            {
+        if (! $this->owner) {
+            if (($owner = $this->getRepoField('owner'))) {
                 $this->owner = $this->showGithubUser($owner['login']);
             }
         }

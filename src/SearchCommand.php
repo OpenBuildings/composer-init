@@ -34,19 +34,15 @@ class SearchCommand extends Command
 
         $templates = $json['packageNames'];
 
-        if (($query = $input->getArgument('name')))
-        {
-            $templates = array_filter($json['packageNames'], function($name) use ($query) {
+        if (($query = $input->getArgument('name'))) {
+            $templates = array_filter($json['packageNames'], function ($name) use ($query) {
                 return strpos($name, $query) !== false;
             });
         }
 
-        if (! count($templates))
-        {
+        if (! count($templates)) {
             $output->writeln("<error>No templates found</error>");
-        }
-        else
-        {
+        } else {
             $output->writeln('Available Init Templates:');
             foreach ($templates as $package) {
                 $output->writeln("  <info>{$package}</info>");

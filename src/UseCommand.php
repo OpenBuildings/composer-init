@@ -53,19 +53,18 @@ class UseCommand extends Command
         $output->writeln('Enter Template variables (Press enter for default):');
         $values = Template::getTemplateValues($output, $template);
 
-        $output->writeln();
+        $output->writeln('');
 
-        if ($template->confirmValues($output, $values))
-        {
+        if ($template->confirmValues($output, $values)) {
+
             $zip->extractDirTo($zip->getRootDir().'root', '.');
             $this->setTemplateVariables($zip->getRootDir().'root', $values);
 
             $this->moveFiles($zip->getRootDir().'root', '.');
             rmdir($zip->getRootDir().'root');
             rmdir($zip->getRootDir());
-        }
-        else
-        {
+
+        } else {
             $output->writeln('<error>Aborted.</error>');
         }
 
@@ -77,11 +76,11 @@ class UseCommand extends Command
 
     public function moveFiles($from, $to)
     {
-        $iterator = new DirectoryIterator($zip->getRootDir().'root');
+        $iterator = new DirectoryIterator($from);
+
         foreach ($iterator as $fileinfo) {
-            if (! $fileinfo->isDot())
-            {
-                rename($fileinfo->getPathname(), str_replace($from.DIRECTORY_SEPARATOR, $to.DIRECTORY_SEPARATOR, $fileinfo->getPathname()));
+            if (! $fileinfo->isDot()) {
+                rename($fileinfo->getPathname(), str_replace($from, $to, $fileinfo->getPathname()));
             }
         }
     }
@@ -96,15 +95,13 @@ class UseCommand extends Command
     public function setTemplateVariables($directory, $values)
     {
         $templateVariables = array();
-        foreach ($values as $key => $value)
-        {
+        foreach ($values as $key => $value) {
             $templateVariables["{%{$key}%}"] = $value;
         }
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
-        foreach ($files as $file)
-        {
+        foreach ($files as $file) {
             $content = strtr(file_get_contents($file->getPathname()), $templateVariables);
             file_put_contents($file->getPathname(), $content);
         }

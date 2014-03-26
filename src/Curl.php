@@ -5,15 +5,15 @@ namespace CL\ComposerInit;
 use Exception;
 use Closure;
 
-class Curl {
-
+class Curl
+{
     private static function execute(array $options)
     {
         $curl = curl_init();
 
         $defaultOptions = array(
-            CURLOPT_RETURNTRANSFER => TRUE,
-            CURLOPT_FOLLOWLOCATION => TRUE,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_USERAGENT      => 'Composer Init Script',
         );
 
@@ -44,19 +44,8 @@ class Curl {
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         if ($code and $code < 200 or $code >= 300) {
-            return sprintf('The server returned error code %s',  $code);
+            return sprintf('The server returned error code %s', $code);
         }
-    }
-
-    private static function progress_options(Closure $callback)
-    {
-        return array(
-            CURLOPT_NOPROGRESS => false,
-            CURLOPT_PROGRESSFUNCTION => function($total, $downloaded) use ($callback) {
-                $progress = ($downloaded and $total) ? ($downloaded / $total) : 0;
-                $callback($progress);
-            },
-        );
     }
 
     public static function get($url)
@@ -88,18 +77,14 @@ class Curl {
         return self::execute($options);
     }
 
-    public static function download($url, $to, Closure $progress = null)
+    public static function download($url, $to)
     {
         $file = fopen($to, 'w');
         $options = array(
             CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => FALSE,
+            CURLOPT_RETURNTRANSFER => false,
             CURLOPT_FILE => $file,
         );
-
-        if ($progress !== null) {
-            $options = $options + self::progress_options($progress);
-        }
 
         self::execute($options);
 
