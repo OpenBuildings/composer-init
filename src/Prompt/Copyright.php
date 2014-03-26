@@ -3,7 +3,6 @@
 namespace CL\ComposerInit\Prompt;
 
 use CL\ComposerInit\TemplateHelper;
-use CL\ComposerInit\Inflector;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>

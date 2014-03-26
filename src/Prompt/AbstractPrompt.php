@@ -2,7 +2,6 @@
 
 namespace CL\ComposerInit\Prompt;
 
-use CL\ComposerInit\Param;
 use CL\ComposerInit\TemplateHelper;
 use CL\ComposerInit\Inflector;
 use Symfony\Component\Console\Output\OutputInterface;

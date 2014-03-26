@@ -14,6 +14,10 @@ class ZipArchive extends \ZipArchive
         return $this->getNameIndex(0);
     }
 
+    /**
+     * @param string $dir
+     * @param string $destination
+     */
     public function extractDirTo($dir, $destination)
     {
         $fullDir = $dir.'/';
@@ -30,6 +34,9 @@ class ZipArchive extends \ZipArchive
         $this->extractTo($destination, $only);
     }
 
+    /**
+     * @param string $file
+     */
     public function includeFile($file)
     {
         $tmp = tmpfile();

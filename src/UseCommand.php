@@ -5,9 +5,7 @@ namespace CL\ComposerInit;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use CL\ComposerInit\Packagist;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use DirectoryIterator;
@@ -74,6 +72,10 @@ class UseCommand extends Command
         $output->writeln('Done');
     }
 
+    /**
+     * @param string $from
+     * @param string $to
+     */
     public function moveFiles($from, $to)
     {
         $iterator = new DirectoryIterator($from);
@@ -85,6 +87,10 @@ class UseCommand extends Command
         }
     }
 
+    /**
+     * @param string $package_name
+     * @param string $release
+     */
     public function getDistUrl($package_name, $release)
     {
         $json = Curl::getJSON("https://packagist.org/packages/{$package_name}.json");
@@ -92,7 +98,11 @@ class UseCommand extends Command
         return $json['package']['versions'][$release]['dist']['url'];
     }
 
-    public function setTemplateVariables($directory, $values)
+    /**
+     * @param string $directory
+     * @param array $values
+     */
+    public function setTemplateVariables($directory, array $values)
     {
         $templateVariables = array();
         foreach ($values as $key => $value) {

@@ -13,6 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TokenCommand extends Command
 {
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -20,6 +23,11 @@ class TokenCommand extends Command
             ->setDescription('Set the github token');
     }
 
+    /**
+     * @param  InputInterface  $input  [description]
+     * @param  OutputInterface $output [description]
+     * @return void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dialog = $this->getHelperSet()->get('dialog');
@@ -31,6 +39,7 @@ class TokenCommand extends Command
                 if (strlen($value) !== 40) {
                     throw new \Exception('Must be a 40 letter token');
                 }
+
                 return $value;
             },
             5,

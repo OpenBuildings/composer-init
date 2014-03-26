@@ -64,6 +64,9 @@ class ComposerInitApplication extends Application
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getGithubToken()
     {
         $config = $this->getConfig();

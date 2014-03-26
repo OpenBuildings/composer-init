@@ -3,10 +3,13 @@
 namespace CL\ComposerInit;
 
 use Exception;
-use Closure;
 
 class Curl
 {
+    /**
+     * @param array $options
+     * @return string
+     */
     private static function execute(array $options)
     {
         $curl = curl_init();
@@ -32,6 +35,10 @@ class Curl
         return $response;
     }
 
+    /**
+     * @param resource $curl
+     * @return void
+     */
     private static function getError($curl)
     {
         $error = curl_error($curl);
@@ -48,6 +55,10 @@ class Curl
         }
     }
 
+    /**
+     * @param string $url
+     * @return string
+     */
     public static function get($url)
     {
         $options = array(CURLOPT_URL => $url);
@@ -55,6 +66,10 @@ class Curl
         return self::execute($options);
     }
 
+    /**
+     * @param string $url
+     * @return string
+     */
     public static function getJSON($url)
     {
         $data = json_decode(self::get($url), true);
@@ -66,6 +81,11 @@ class Curl
         return $data === null ? array() : $data;
     }
 
+    /**
+     * @param string $url
+     * @param string $to filename
+     * @return void
+     */
     public static function download($url, $to)
     {
         $file = fopen($to, 'w');

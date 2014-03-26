@@ -5,7 +5,6 @@ namespace CL\ComposerInit;
 use CL\ComposerInit\Prompt\AbstractPrompt;
 use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Application;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -19,22 +18,38 @@ class TemplateHelper extends Helper
     protected $owner;
     protected $application;
 
+    /**
+     * @param ComposerInitApplication $application
+     * @return TemplateHelper $this
+     */
     public function setApplication(ComposerInitApplication $application)
     {
         $this->application = $application;
+
         return $this;
     }
 
+    /**
+     * @return ComposerInitApplication
+     */
     public function getApplication()
     {
         return $this->application;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'template';
     }
 
+    /**
+     * @param  OutputInterface $output
+     * @param  array           $params
+     * @return array
+     */
     public function retrieveParams(OutputInterface $output, array $params)
     {
         $values = array(
@@ -52,6 +67,12 @@ class TemplateHelper extends Helper
         return $values;
     }
 
+    /**
+     * @param  OutputInterface $output
+     * @param  string          $file
+     * @param  string          $url
+     * @return void
+     */
     public function download(OutputInterface $output, $file, $url)
     {
         $output->writeln("<info>Downloading:</info> $url");
@@ -61,6 +82,11 @@ class TemplateHelper extends Helper
         $output->writeln("<info>Done.</info>");
     }
 
+    /**
+     * @param  OutputInterface $output [description]
+     * @param  array           $values [description]
+     * @return void
+     */
     public function confirmValues(OutputInterface $output, array $values)
     {
         $dialog = $this->getHelperSet()->get('dialog');
@@ -78,26 +104,44 @@ class TemplateHelper extends Helper
         );
     }
 
+    /**
+     * @param string $name
+     */
     public function getGitConfig($name)
     {
         return trim(`git config {$name}`);
     }
 
+    /**
+     * @return Github\Client
+     */
     public function getGithub()
     {
         return $this->getApplication()->getGithub();
     }
 
+    /**
+     * @param string $name
+     * @param string $user
+     * @return array
+     */
     public function showGithubRepo($user, $name)
     {
         return $this->getGithub()->api('repo')->show($user, $name);
     }
 
+    /**
+     * @param  string $login
+     * @return array
+     */
     public function showGithubUser($login)
     {
         return $this->getGithub()->api('user')->show($login);
     }
 
+    /**
+     * @return array
+     */
     public function getRepo()
     {
         if (! $this->repo) {
@@ -113,6 +157,9 @@ class TemplateHelper extends Helper
         return $this->repo;
     }
 
+    /**
+     * @param string $field
+     */
     public function getRepoField($field)
     {
         $repo = $this->getRepo();
@@ -120,6 +167,9 @@ class TemplateHelper extends Helper
         return isset($repo[$field]) ? $repo[$field] : null;
     }
 
+    /**
+     * @return array
+     */
     public function getOrganization()
     {
         if (! $this->organization) {
@@ -131,6 +181,9 @@ class TemplateHelper extends Helper
         return $this->organization;
     }
 
+    /**
+     * @return array
+     */
     public function getOwner()
     {
         if (! $this->owner) {
