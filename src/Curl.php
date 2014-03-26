@@ -7,7 +7,7 @@ use Exception;
 class Curl
 {
     /**
-     * @param array $options
+     * @param  array  $options
      * @return string
      */
     private static function execute(array $options)
@@ -36,7 +36,7 @@ class Curl
     }
 
     /**
-     * @param resource $curl
+     * @param  resource    $curl
      * @return string|null
      */
     private static function getError($curl)
@@ -45,6 +45,7 @@ class Curl
 
         if ($error) {
             $url = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+
             return sprintf('Request for %s returned %s', $url, $error);
         }
 
@@ -56,7 +57,7 @@ class Curl
     }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @return string
      */
     public static function get($url)
@@ -67,7 +68,7 @@ class Curl
     }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @return string
      */
     public static function getJSON($url)
@@ -82,8 +83,8 @@ class Curl
     }
 
     /**
-     * @param string $url
-     * @param string $to filename
+     * @param  string $url
+     * @param  string $to  filename
      * @return void
      */
     public static function download($url, $to)

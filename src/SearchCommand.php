@@ -29,7 +29,7 @@ class SearchCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $json = Curl::getJSON('https://packagist.org/packages/packages/list.json?q=composer-init-template');
+        $json = Curl::getJSON('https://packagist.org/packages/list.json?type=composer-init-template');
 
         $templates = (array) $json['packageNames'];
 

@@ -158,7 +158,7 @@ class TemplateHelper extends Helper
     }
 
     /**
-     * @param string $field
+     * @param  string $field
      * @return string
      */
     public function getRepoField($field)
