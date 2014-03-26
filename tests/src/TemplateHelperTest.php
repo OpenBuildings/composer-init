@@ -67,14 +67,17 @@ class TemplateHelperTest extends AbstractTestCase
      */
     public function testDownload()
     {
-        $this->template->download($this->output, $this->getTestsDir().'test_downloaded.txt', 'file://'.$this->getTestsDir().'test.txt');
+        $sourceFile = $this->getTestsDir().'test.txt';
+        $destinationFile = $this->getTestsDir().'test_downloaded.txt';
 
-        $this->assertFileEquals($this->getTestsDir().'test.txt', $this->getTestsDir().'test_downloaded.txt');
+        $this->template->download($this->output, $destinationFile, 'file://'.$sourceFile);
 
-        unlink($this->getTestsDir().'test_downloaded.txt');
+        $this->assertFileEquals($sourceFile, $destinationFile);
+
+        unlink($destinationFile);
 
         $expectedOutput = <<<OUTPUT
-Downloading: file:///vagrant/libs/composer-init/tests/test.txt
+Downloading: file://$sourceFile
 Done.
 
 OUTPUT;

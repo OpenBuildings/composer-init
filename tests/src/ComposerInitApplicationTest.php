@@ -7,8 +7,8 @@ use CL\ComposerInit\ComposerInitApplication;
 class ComposerInitApplicationTest extends AbstractTestCase
 {
     /**
-     * @covers CL\ComposerInit\ComposerInitApplicatio::__construct
-     * @covers CL\ComposerInit\ComposerInitApplicatio::getConfigFile
+     * @covers CL\ComposerInit\ComposerInitApplication::__construct
+     * @covers CL\ComposerInit\ComposerInitApplication::getConfigFile
      */
     public function testConstruct()
     {
@@ -20,7 +20,7 @@ class ComposerInitApplicationTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\ComposerInitApplicatio::getConfig
+     * @covers CL\ComposerInit\ComposerInitApplication::getConfig
      */
     public function testGetConfig()
     {
@@ -40,7 +40,7 @@ class ComposerInitApplicationTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\ComposerInitApplicatio::setConfig
+     * @covers CL\ComposerInit\ComposerInitApplication::setConfig
      */
     public function testSetConfig()
     {
@@ -56,8 +56,8 @@ class ComposerInitApplicationTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\ComposerInitApplicatio::getGithubToken
-     * @covers CL\ComposerInit\ComposerInitApplicatio::setGithubToken
+     * @covers CL\ComposerInit\ComposerInitApplication::getGithubToken
+     * @covers CL\ComposerInit\ComposerInitApplication::setGithubToken
      */
     public function testGetGithubToken()
     {
@@ -75,7 +75,7 @@ class ComposerInitApplicationTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\ComposerInitApplicatio::getGithub
+     * @covers CL\ComposerInit\ComposerInitApplication::getGithub
      */
     public function testGetGithub()
     {
