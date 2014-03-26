@@ -37,7 +37,7 @@ class Curl
 
     /**
      * @param resource $curl
-     * @return void
+     * @return string|null
      */
     private static function getError($curl)
     {

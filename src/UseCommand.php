@@ -100,7 +100,7 @@ class UseCommand extends Command
 
     /**
      * @param string $directory
-     * @param array $values
+     * @param array  $values
      */
     public function setTemplateVariables($directory, array $values)
     {

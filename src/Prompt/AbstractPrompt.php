@@ -13,6 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class AbstractPrompt
 {
+    /**
+     * @return string
+     */
     abstract public function getName();
     abstract public function getDefaults(TemplateHelper $helper);
 

@@ -19,8 +19,8 @@ class TemplateHelper extends Helper
     protected $application;
 
     /**
-     * @param ComposerInitApplication $application
-     * @return TemplateHelper $this
+     * @param  ComposerInitApplication $application
+     * @return TemplateHelper          $this
      */
     public function setApplication(ComposerInitApplication $application)
     {
@@ -113,7 +113,7 @@ class TemplateHelper extends Helper
     }
 
     /**
-     * @return Github\Client
+     * @return \Github\Client
      */
     public function getGithub()
     {
@@ -121,8 +121,8 @@ class TemplateHelper extends Helper
     }
 
     /**
-     * @param string $name
-     * @param string $user
+     * @param  string $name
+     * @param  string $user
      * @return array
      */
     public function showGithubRepo($user, $name)
@@ -159,6 +159,7 @@ class TemplateHelper extends Helper
 
     /**
      * @param string $field
+     * @return string
      */
     public function getRepoField($field)
     {

@@ -31,10 +31,10 @@ class SearchCommand extends Command
     {
         $json = Curl::getJSON('https://packagist.org/packages/packages/list.json?q=composer-init-template');
 
-        $templates = $json['packageNames'];
+        $templates = (array) $json['packageNames'];
 
         if (($query = $input->getArgument('name'))) {
-            $templates = array_filter($json['packageNames'], function ($name) use ($query) {
+            $templates = array_filter($templates, function ($name) use ($query) {
                 return strpos($name, $query) !== false;
             });
         }
