@@ -59,8 +59,7 @@ class UseCommand extends Command
             $this->setTemplateVariables($zip->getRootDir().'root', $values);
 
             $this->moveFiles($zip->getRootDir().'root', '.');
-            rmdir($zip->getRootDir().'root');
-            rmdir($zip->getRootDir());
+            $this->deleteDir($zip->getRootDir());
 
         } else {
             $output->writeln('<error>Aborted.</error>');
@@ -78,13 +77,36 @@ class UseCommand extends Command
      */
     public function moveFiles($from, $to)
     {
-        $iterator = new DirectoryIterator($from);
+        $iterator = new DirectoryIterator($src);
 
-        foreach ($iterator as $fileinfo) {
-            if (! $fileinfo->isDot()) {
-                rename($fileinfo->getPathname(), str_replace($from, $to, $fileinfo->getPathname()));
+        foreach ($iterator as $path) {
+            if ($path->isFile()) {
+                rename($path->getRealPath(), $to.DIRECTORY_SEPARATOR.$path->getFilename());
+            } elseif (! $path->isDot() and $path->isDir()) {
+                $this->moveFiles($path->getRealPath(), $to.DIRECTORY_SEPARATOR.$path);
             }
         }
+    }
+
+    public function deleteDir($path)
+    {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $path,
+                FilesystemIterator::SKIP_DOTS
+            ),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($iterator as $item) {
+            if ($item->isFile()) {
+                unlink($item->getPathname());
+            } else {
+                rmdir($item->getPathname());
+            }
+        }
+
+        rmdir($path);
     }
 
     /**
