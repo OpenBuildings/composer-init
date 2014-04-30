@@ -62,11 +62,13 @@ class UseCommand extends Command
 
         if ($template->confirmValues($output, $values)) {
 
-            $zip->extractDirTo($zip->getRootDir().'root', $this->getDestination());
-            $this->setTemplateVariables($this->getDestination().DIRECTORY_SEPARATOR.$zip->getRootDir().'root', $values);
+            $tmpDir = $this->getDestination().DIRECTORY_SEPARATOR.$zip->getRootDir();
 
-            $this->moveFiles($this->getDestination().DIRECTORY_SEPARATOR.$zip->getRootDir().'root', $this->getDestination());
-            $this->deleteDir($this->getDestination().DIRECTORY_SEPARATOR.$zip->getRootDir());
+            $zip->extractDirTo($zip->getRootDir().'root', $this->getDestination());
+            $this->setTemplateVariables($tmpDir.'root', $values);
+
+            $this->moveFiles($tmpDir.'root', $this->getDestination());
+            $this->deleteDir($tmpDir);
 
         } else {
             $output->writeln('<error>Aborted.</error>');

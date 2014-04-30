@@ -194,10 +194,5 @@ class UseCommandTest extends AbstractTestCase
 
         $this->assertContains('# Test Project Named test name', file_get_contents(($testDir.'/README.md')));
         $this->assertContains('@author    author 2', file_get_contents(($testDir.'/src/Init.php')));
-
-        unlink($testDir.'/src/Init.php');
-        rmdir($testDir.'/src');
-        unlink($testDir.'/.gitignore');
-        unlink($testDir.'/README.md');
     }
 }
