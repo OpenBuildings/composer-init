@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use FilesystemIterator;
 use DirectoryIterator;
 
 /**
@@ -35,11 +36,17 @@ class UseCommand extends Command
             );
     }
 
+    public function getDestination()
+    {
+        return '.';
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $template = $this->getHelperSet()->get('template');
 
         $distUrl = $this->getDistUrl($input->getArgument('package'), $input->getArgument('release'));
+
 
         $tempFile = tempnam(sys_get_temp_dir(), 'package');
         $template->download($output, $tempFile, $distUrl);
@@ -55,11 +62,11 @@ class UseCommand extends Command
 
         if ($template->confirmValues($output, $values)) {
 
-            $zip->extractDirTo($zip->getRootDir().'root', '.');
-            $this->setTemplateVariables($zip->getRootDir().'root', $values);
+            $zip->extractDirTo($zip->getRootDir().'root', $this->getDestination());
+            $this->setTemplateVariables($this->getDestination().DIRECTORY_SEPARATOR.$zip->getRootDir().'root', $values);
 
-            $this->moveFiles($zip->getRootDir().'root', '.');
-            $this->deleteDir($zip->getRootDir());
+            $this->moveFiles($this->getDestination().DIRECTORY_SEPARATOR.$zip->getRootDir().'root', $this->getDestination());
+            $this->deleteDir($this->getDestination().DIRECTORY_SEPARATOR.$zip->getRootDir());
 
         } else {
             $output->writeln('<error>Aborted.</error>');
@@ -77,14 +84,21 @@ class UseCommand extends Command
      */
     public function moveFiles($from, $to)
     {
-        $iterator = new DirectoryIterator($src);
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $from,
+                FilesystemIterator::SKIP_DOTS
+            )
+        );
 
-        foreach ($iterator as $path) {
-            if ($path->isFile()) {
-                rename($path->getRealPath(), $to.DIRECTORY_SEPARATOR.$path->getFilename());
-            } elseif (! $path->isDot() and $path->isDir()) {
-                $this->moveFiles($path->getRealPath(), $to.DIRECTORY_SEPARATOR.$path);
+        foreach ($iterator as $item) {
+            $destination = $to.str_replace($from, '', $item->getPathname());
+
+            if (! file_exists(dirname($destination))) {
+                mkdir(dirname($destination));
             }
+
+            rename($item->getPathname(), $destination);
         }
     }
 
@@ -134,8 +148,10 @@ class UseCommand extends Command
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
         foreach ($files as $file) {
-            $content = strtr(file_get_contents($file->getPathname()), $templateVariables);
-            file_put_contents($file->getPathname(), $content);
+            if ($file->isFile()) {
+                $content = strtr(file_get_contents($file->getPathname()), $templateVariables);
+                file_put_contents($file->getPathname(), $content);
+            }
         }
     }
 }

@@ -83,8 +83,8 @@ class TemplateHelper extends Helper
     }
 
     /**
-     * @param  OutputInterface $output [description]
-     * @param  array           $values [description]
+     * @param  OutputInterface $output
+     * @param  array           $values
      * @return void
      */
     public function confirmValues(OutputInterface $output, array $values)

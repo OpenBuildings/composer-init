@@ -56,7 +56,7 @@ class ZipArchiveTest extends AbstractTestCase
             array('test_extract', 'clippings-package-template-971a36f'),
             array('test_extract', 'clippings-package-template-971a36f', 'root'),
             array('test_extract', 'clippings-package-template-971a36f', 'root', '.gitignore'),
-            array('test_extract', 'clippings-package-template-971a36f', 'root', 'LICENSE'),
+            array('test_extract', 'clippings-package-template-971a36f', 'root', 'README.md'),
             array('test_extract', 'clippings-package-template-971a36f', 'root', 'src'),
             array('test_extract', 'clippings-package-template-971a36f', 'root', 'src', 'Init.php'),
         );
