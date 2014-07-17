@@ -5,10 +5,13 @@ namespace CL\ComposerInit\Test;
 use CL\ComposerInit\TemplateHelper;
 use CL\ComposerInit\Prompt\Copyright;
 
+/**
+ * @coversDefaultClass CL\ComposerInit\Prompt\Copyright
+ */
 class CopyrightTest extends AbstractTestCase
 {
     /**
-     * @covers CL\ComposerInit\Prompt\Copyright::getName
+     * @covers ::getName
      */
     public function testGetName()
     {
@@ -18,7 +21,17 @@ class CopyrightTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\Prompt\Copyright::getDefaults
+     * @covers ::getTitle
+     */
+    public function testGetTitle()
+    {
+        $prompt = new Copyright();
+
+        $this->assertEquals('Copyright', $prompt->getTitle());
+    }
+
+    /**
+     * @covers ::getDefaults
      */
     public function testGetDefaults()
     {

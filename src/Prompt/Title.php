@@ -17,6 +17,11 @@ class Title extends AbstractPrompt
         return 'title';
     }
 
+    public function getTitle()
+    {
+        return 'Title';
+    }
+
     public function getDefaults(TemplateHelper $template)
     {
         return array(Inflector::title($template->getRepoField('name')));

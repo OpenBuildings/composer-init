@@ -17,6 +17,7 @@ abstract class AbstractPrompt
      * @return string
      */
     abstract public function getName();
+    abstract public function getTitle();
     abstract public function getDefaults(TemplateHelper $helper);
 
     public function getValues(OutputInterface $output, TemplateHelper $helper)
@@ -25,7 +26,7 @@ abstract class AbstractPrompt
         $defaults = $this->getDefaults($helper);
         $firstDefault = reset($defaults);
 
-        $title = Inflector::title($this->getName());
+        $title = $this->getTitle();
 
         $response = $dialog->ask(
             $output,

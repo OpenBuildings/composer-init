@@ -17,6 +17,11 @@ class PHPNamespace extends AbstractPrompt
         return 'php_namespace';
     }
 
+    public function getTitle()
+    {
+        return 'PHP Namespace';
+    }
+
     public function getDefaults(TemplateHelper $template)
     {
         list($vendor, $name) = explode('/', $template->getRepoField('full_name'));

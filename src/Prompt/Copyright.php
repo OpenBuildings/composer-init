@@ -16,6 +16,11 @@ class Copyright extends AbstractPrompt
         return 'copyright';
     }
 
+    public function getTitle()
+    {
+        return 'Copyright';
+    }
+
     public function getDefaults(TemplateHelper $template)
     {
         $organization = $template->getOrganization();

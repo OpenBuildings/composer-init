@@ -6,10 +6,13 @@ use CL\ComposerInit\Prompt\AbstractPrompt;
 use CL\ComposerInit\TemplateHelper;
 use Symfony\Component\Console\Application;
 
+/**
+ * @coversDefaultClass CL\ComposerInit\Prompt\AbstractPrompt
+ */
 class AbstractPromptTest extends AbstractTestCase
 {
     /**
-     * @covers CL\ComposerInit\Prompt\AbstractPrompt::getValuesForResponse
+     * @covers ::getValuesForResponse
      */
     public function testGetValuesForResponse()
     {
@@ -43,15 +46,20 @@ class AbstractPromptTest extends AbstractTestCase
             ->will($this->returnValue(array('default 1', 'default 2')));
 
         $prompt
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('getName')
             ->will($this->returnValue('test name'));
+
+        $prompt
+            ->expects($this->once())
+            ->method('getTitle')
+            ->will($this->returnValue('Test Name!'));
 
         $template->getHelperSet()->get('dialog')->setInputStream($this->getInputStream("\n"));
 
         $values = $prompt->getValues($output, $template);
 
-        $this->assertEquals("Test Name (default 1): \n", $output->output);
+        $this->assertEquals("Test Name! (default 1): \n", $output->output);
 
         $expected = array(
             'test name' => 'default 1',

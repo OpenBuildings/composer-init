@@ -5,10 +5,13 @@ namespace CL\ComposerInit\Test;
 use CL\ComposerInit\TemplateHelper;
 use CL\ComposerInit\Prompt\PHPNamespace;
 
+/**
+ * @coversDefaultClass CL\ComposerInit\Prompt\PHPNamespace
+ */
 class PHPNamespaceTest extends AbstractTestCase
 {
     /**
-     * @covers CL\ComposerInit\Prompt\PHPNamespace::getName
+     * @covers ::getName
      */
     public function testGetName()
     {
@@ -18,7 +21,17 @@ class PHPNamespaceTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\Prompt\PHPNamespace::getDefaults
+     * @covers ::getTitle
+     */
+    public function testGetTitle()
+    {
+        $prompt = new PHPNamespace();
+
+        $this->assertEquals('PHP Namespace', $prompt->getTitle());
+    }
+
+    /**
+     * @covers ::getDefaults
      */
     public function testGetDefaults()
     {
@@ -40,7 +53,7 @@ class PHPNamespaceTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\Prompt\PHPNamespace::getValuesForResponse
+     * @covers ::getValuesForResponse
      */
     public function testGetValuesForResponse()
     {

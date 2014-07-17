@@ -16,6 +16,11 @@ class AuthorName extends AbstractPrompt
         return 'author_name';
     }
 
+    public function getTitle()
+    {
+        return 'Author Name';
+    }
+
     public function getDefaults(TemplateHelper $template)
     {
         return array(

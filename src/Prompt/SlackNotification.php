@@ -23,6 +23,11 @@ class SlackNotification extends AbstractPrompt
         );
     }
 
+    public function getTitle()
+    {
+        return 'Encrypted Slack Notification code';
+    }
+
     public function getValuesForResponse($response)
     {
         return array(

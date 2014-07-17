@@ -16,6 +16,11 @@ class AuthorEmail extends AbstractPrompt
         return 'author_email';
     }
 
+    public function getTitle()
+    {
+        return 'Author Email';
+    }
+
     public function getDefaults(TemplateHelper $template)
     {
         return array(

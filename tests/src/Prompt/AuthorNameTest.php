@@ -5,10 +5,13 @@ namespace CL\ComposerInit\Test;
 use CL\ComposerInit\TemplateHelper;
 use CL\ComposerInit\Prompt\AuthorName;
 
+/**
+ * @coversDefaultClass CL\ComposerInit\Prompt\AuthorName
+ */
 class AuthorNameTest extends AbstractTestCase
 {
     /**
-     * @covers CL\ComposerInit\Prompt\AuthorName::getName
+     * @covers ::getName
      */
     public function testGetName()
     {
@@ -18,7 +21,17 @@ class AuthorNameTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\Prompt\AuthorName::getDefaults
+     * @covers ::getTitle
+     */
+    public function testGetTitle()
+    {
+        $prompt = new AuthorName();
+
+        $this->assertEquals('Author Name', $prompt->getTitle());
+    }
+
+    /**
+     * @covers ::getDefaults
      */
     public function testGetDefaults()
     {

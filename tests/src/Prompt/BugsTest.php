@@ -5,10 +5,13 @@ namespace CL\ComposerInit\Test;
 use CL\ComposerInit\TemplateHelper;
 use CL\ComposerInit\Prompt\Bugs;
 
+/**
+ * @coversDefaultClass CL\ComposerInit\Prompt\Bugs
+ */
 class BugsTest extends AbstractTestCase
 {
     /**
-     * @covers CL\ComposerInit\Prompt\Bugs::getName
+     * @covers ::getName
      */
     public function testGetName()
     {
@@ -18,7 +21,17 @@ class BugsTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\Prompt\Bugs::getDefaults
+     * @covers ::getTitle
+     */
+    public function testGetTitle()
+    {
+        $prompt = new Bugs();
+
+        $this->assertEquals('Issues url', $prompt->getTitle());
+    }
+
+    /**
+     * @covers ::getDefaults
      */
     public function testGetDefaults()
     {

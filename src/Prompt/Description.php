@@ -16,6 +16,11 @@ class Description extends AbstractPrompt
         return 'description';
     }
 
+    public function getTitle()
+    {
+        return 'Description';
+    }
+
     public function getDefaults(TemplateHelper $template)
     {
         return array(

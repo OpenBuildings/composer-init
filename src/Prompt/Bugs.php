@@ -16,6 +16,11 @@ class Bugs extends AbstractPrompt
         return 'bugs';
     }
 
+    public function getTitle()
+    {
+        return 'Issues url';
+    }
+
     public function getDefaults(TemplateHelper $template)
     {
         return array(

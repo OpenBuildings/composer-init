@@ -21,6 +21,16 @@ class SlackNotificationTest extends AbstractTestCase
     }
 
     /**
+     * @covers ::getTitle
+     */
+    public function testGetTitle()
+    {
+        $prompt = new SlackNotification();
+
+        $this->assertEquals('Encrypted Slack Notification code', $prompt->getTitle());
+    }
+
+    /**
      * @covers ::getDefaults
      */
     public function testGetDefaults()

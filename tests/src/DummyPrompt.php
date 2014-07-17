@@ -18,6 +18,11 @@ class DummyPrompt extends AbstractPrompt
         return 'dummy';
     }
 
+    public function getTitle()
+    {
+        return 'Dummy';
+    }
+
     public function getDefaults(TemplateHelper $template)
     {
         return array('dummy_default');

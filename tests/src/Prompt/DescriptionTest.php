@@ -5,10 +5,13 @@ namespace CL\ComposerInit\Test;
 use CL\ComposerInit\TemplateHelper;
 use CL\ComposerInit\Prompt\Description;
 
+/**
+ * @coversDefaultClass CL\ComposerInit\Prompt\Description
+ */
 class DescriptionTest extends AbstractTestCase
 {
     /**
-     * @covers CL\ComposerInit\Prompt\Description::getName
+     * @covers ::getName
      */
     public function testGetName()
     {
@@ -18,7 +21,17 @@ class DescriptionTest extends AbstractTestCase
     }
 
     /**
-     * @covers CL\ComposerInit\Prompt\Description::getDefaults
+     * @covers ::getTitle
+     */
+    public function testGetTitle()
+    {
+        $prompt = new Description();
+
+        $this->assertEquals('Description', $prompt->getTitle());
+    }
+
+    /**
+     * @covers ::getDefaults
      */
     public function testGetDefaults()
     {
