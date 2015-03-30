@@ -3,32 +3,29 @@
 namespace CL\ComposerInit\Test\Prompt;
 
 use PHPUnit_Framework_TestCase;
-use CL\ComposerInit\Prompt\TitlePrompt;
+use CL\ComposerInit\Prompt\BugsPrompt;
 use CL\ComposerInit\Prompt\GitConfig;
-use CL\ComposerInit\Prompt\Inflector;
 use Symfony\Component\Console\Output\NullOutput;
+use Closure;
+use RuntimeException;
 
 /**
- * @coversDefaultClass CL\ComposerInit\Prompt\TitlePrompt
+ * @coversDefaultClass CL\ComposerInit\Prompt\BugsPrompt
  */
-class TitlePromptTest extends PHPUnit_Framework_TestCase
+class BugsPromptTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers ::__construct
-     * @covers ::getConfig
-     * @covers ::getGithub
-     * @covers ::getInflector
+     * @covers ::getGitConfig
      */
     public function testConstruct()
     {
         $gitConfig = new GitConfig();
         $github = new GithubMock();
-        $inflector = new Inflector();
-        $prompt = new TitlePrompt($gitConfig, $github, $inflector);
+        $prompt = new BugsPrompt($gitConfig, $github);
 
         $this->assertSame($gitConfig, $prompt->getGitConfig());
         $this->assertSame($github, $prompt->getGithub());
-        $this->assertSame($inflector, $prompt->getInflector());
     }
 
     /**
@@ -36,27 +33,18 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDefaultNull()
     {
-        $getConfig = $this
+        $gitConfig = $this
             ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
             ->getMock();
 
-        $getConfig
+        $gitConfig
             ->method('getOrigin')
             ->willReturn(null);
 
-        $inflector = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\Inflector')
-            ->getMock();
-
-        $inflector
-            ->method('title')
-            ->with(getcwd())
-            ->willReturn('INFLECTED');
-
         $github = new GithubMock();
-        $prompt = new TitlePrompt($getConfig, $github, $inflector);
+        $prompt = new BugsPrompt($gitConfig, $github);
 
-        $this->assertEquals('INFLECTED', $prompt->getDefault());
+        $this->assertNull($prompt->getDefault());
         $this->assertEmpty($github->getHistory());
     }
 
@@ -65,23 +53,21 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
      */
     public function testGetDefaultGithub()
     {
-        $getConfig = $this
+        $gitConfig = $this
             ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
             ->getMock();
 
-        $getConfig
+        $gitConfig
             ->method('getOrigin')
             ->willReturn('octocat/Hello-World');
 
         $github = new GithubMock();
         $github->queueResponse('repo.json');
 
-        $inflector = new Inflector();
-
-        $prompt = new TitlePrompt($getConfig, $github, $inflector);
+        $prompt = new BugsPrompt($gitConfig, $github);
 
         $this->assertEquals(
-            'Hello World',
+            'https://github.com/octocat/Hello-World/issues/new',
             $prompt->getDefault()
         );
         $request = $github->getHistory()->getLastRequest();
@@ -97,14 +83,14 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
     public function testGetValues()
     {
         $prompt = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\TitlePrompt')
+            ->getMockBuilder('CL\ComposerInit\Prompt\BugsPrompt')
             ->disableOriginalConstructor()
             ->setMethods(['getDefault'])
             ->getMock();
 
         $prompt
             ->method('getDefault')
-            ->willReturn('TITLE');
+            ->willReturn('https://example.com/issues');
 
         $output = new NullOutput();
 
@@ -113,20 +99,30 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $dialog
-            ->method('ask')
+            ->method('askAndValidate')
             ->with(
                 $this->identicalTo($output),
-                '<info>Title</info> (TITLE): ',
-                'TITLE'
+                '<info>Issues url</info> (https://example.com/issues): ',
+                $this->callback(function(Closure $test) {
+                    $this->assertEquals(
+                        'https://example.com/issues',
+                        $test('https://example.com/issues')
+                    );
+
+                    try {
+                        $test('asd');
+                    } catch (RuntimeException $e) {
+                        return true;
+                    }
+
+                    return false;
+                }),
+                false,
+                'https://example.com/issues'
             )
-            ->willReturn('NEW_TITLE');
+            ->willReturn('https://example.com/issues/new');
 
         $values = $prompt->getValues($output, $dialog);
-        $expected = [
-            'title' => 'NEW_TITLE',
-            'title_underline' => '=========',
-        ];
-
-        $this->assertEquals($expected, $values);
+        $this->assertEquals(['bugs' => 'https://example.com/issues/new'], $values);
     }
 }

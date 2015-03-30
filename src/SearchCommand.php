@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use GuzzleHttp\Client;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -14,35 +15,84 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SearchCommand extends Command
 {
+    /**
+     * @var GuzzleClient
+     */
+    private $packegist;
+
+    /**
+     * @param Client $packegist
+     */
+    public function __construct(Client $packegist)
+    {
+        parent::__construct();
+        $this->packegist = $packegist;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getPackegist()
+    {
+        return $this->packegist;
+    }
+
     protected function configure()
     {
         $this
             ->setName('search')
             ->setDescription('Search available composer init templates')
             ->addArgument(
-                'name',
+                'filter',
                 InputArgument::OPTIONAL,
                 'Filter by name'
             );
         ;
     }
 
+    /**
+     * @return array
+     */
+    public function getTemplates()
+    {
+        $list = $this->packegist
+            ->get('/packages/list.json', ['query' => ['type' => 'composer-init-template']])
+            ->json();
+
+        return (array) $list['packageNames'];
+    }
+
+    /**
+     * @param  array  $array
+     * @param  string $filter
+     * @return array
+     */
+    public function filterWith(array $array, $filter)
+    {
+        return array_filter($array, function ($name) use ($filter) {
+            return false !== strpos($name, $filter);
+        });
+    }
+
+    /**
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $json = Curl::getJSON('https://packagist.org/packages/list.json?type=composer-init-template');
+        $templates = $this->getTemplates();
 
-        $templates = (array) $json['packageNames'];
+        $filter = $input->getArgument('filter');
 
-        if (($query = $input->getArgument('name'))) {
-            $templates = array_filter($templates, function ($name) use ($query) {
-                return strpos($name, $query) !== false;
-            });
+        if ($filter) {
+            $templates = $this->filterWith($templates, $filter);
         }
 
-        if (! count($templates)) {
+        if (empty($templates)) {
             $output->writeln("<error>No templates found</error>");
         } else {
             $output->writeln('Available Init Templates:');
+
             foreach ($templates as $package) {
                 $output->writeln("  <info>{$package}</info>");
             }

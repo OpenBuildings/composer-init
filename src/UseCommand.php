@@ -10,6 +10,7 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use FilesystemIterator;
 use DirectoryIterator;
+use GuzzleHttp\Client;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -18,6 +19,18 @@ use DirectoryIterator;
  */
 class UseCommand extends Command
 {
+    private $packegist;
+
+    public function __construct(Client $packegist)
+    {
+        $this->packegist = $packegist;
+    }
+
+    public function getPackegist()
+    {
+        return $this->packegist;
+    }
+
     protected function configure()
     {
         $this
@@ -27,12 +40,6 @@ class UseCommand extends Command
                 'package',
                 InputArgument::REQUIRED,
                 'Package Name'
-            )
-            ->addArgument(
-                'release',
-                InputArgument::OPTIONAL,
-                'The version to use, e.g. dev-master',
-                'dev-master'
             );
     }
 
@@ -43,39 +50,49 @@ class UseCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $template = $this->getHelperSet()->get('template');
+        $packageName = $input->getArgument('package');
 
-        $distUrl = $this->getDistUrl($input->getArgument('package'), $input->getArgument('release'));
+        $distUrl = $this->getDistUrl($packageName);
+        $zipFile = tempnam(sys_get_temp_dir(), 'package');
 
+        $client = new Client();
+        $client->get($distUrl, ['save_to' => $zipFile]);
 
-        $tempFile = tempnam(sys_get_temp_dir(), 'package');
-        $template->download($output, $tempFile, $distUrl);
+        $templateDir = sys_get_temp_dir()."/composer-init-template/{$packageName}";
+        mkdir($template, 0777, true);
+        $this->deleteContants($templateDir);
 
         $zip = new ZipArchive();
-        $zip->open($tempFile);
-        $zip->includeFile($zip->getRootDir().'Template.php');
+        $zip->open($zipFile);
+        $zip->extractTo($templateDir);
+        $zip->close();
+
+        $names = file_get_contents($templateDir.'/prompts.json', true);
 
         $output->writeln('Enter Template variables (Press enter for default):');
-        $values = Template::getTemplateValues($output, $template);
 
-        $output->writeln('');
+        $dialog = $this->getHelperSet()->get('dialog');
 
-        if ($template->confirmValues($output, $values)) {
+        $prompts = new Prompts();
+        $values = $prompts->getValues($names, $output, $dialog);
 
-            $tmpDir = $this->getDestination().DIRECTORY_SEPARATOR.$zip->getRootDir();
 
-            $zip->extractDirTo($zip->getRootDir().'root', $this->getDestination());
-            $this->setTemplateVariables($tmpDir.'root', $values);
+        $valuesDisplay = "Use These Variables:\n";
+        foreach ($values as $key => $value) {
+            $valuesDisplay .= "  <info>$key</info>: $value\n";
+        }
+        $valuesDisplay .= "Confirm? <comment>(Y/n)</comment>:";
 
-            $this->moveFiles($tmpDir.'root', $this->getDestination());
-            $this->deleteDir($tmpDir);
-
+        if ($dialog->askConfirmation($output, $valuesDisplay, 'y') {
+            $this->setTemplateVariables($templateDir.'root', $values);
+            $this->moveFiles($templateDir.'/root', getcwd());
         } else {
             $output->writeln('<error>Aborted.</error>');
         }
 
-        $zip->close();
-        unlink($tempFile);
+        $this->deleteContants($templateDir);
+        rmdir($templateDir);
+        unlink($zipFile);
 
         $output->writeln('Done');
     }
@@ -104,7 +121,7 @@ class UseCommand extends Command
         }
     }
 
-    public function deleteDir($path)
+    public function deleteContants($path)
     {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(
@@ -121,19 +138,18 @@ class UseCommand extends Command
                 rmdir($item->getPathname());
             }
         }
-
-        rmdir($path);
     }
 
     /**
-     * @param string $package_name
-     * @param string $release
+     * @param string $packageName
      */
-    public function getDistUrl($package_name, $release)
+    public function getDistUrl($packageName)
     {
-        $json = Curl::getJSON("https://packagist.org/packages/{$package_name}.json");
+        $package = $this->packegist
+            ->get("/packages/{$packageName}.json")
+            ->json();
 
-        return $json['package']['versions'][$release]['dist']['url'];
+        return $package['package']['versions']['dev-master']['dist']['url'];
     }
 
     /**

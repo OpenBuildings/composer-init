@@ -11,15 +11,15 @@
         }
     ],
     "require": {
-        "php": ">=5.3.6",
-        "symfony/console": "~2.1",
-        "knplabs/github-api": "~1.2"
-    },
-    "require-dev": {
-        "clippings/env-backup": "~0.2.2"
+        "symfony/console": "~2.5",
+        "guzzlehttp/guzzle": "~5.0",
+        "pimple/pimple": "~3.0"
     },
     "autoload": {
-        "psr-4": {"CL\\ComposerInit\\": "src/"}
+        "psr-4": {
+            "CL\\ComposerInit\\": "src/",
+            "CL\\ComposerInit\\Test\\": "tests/src/"
+        }
     },
     "bin": ["bin/composer-init"]
 }
