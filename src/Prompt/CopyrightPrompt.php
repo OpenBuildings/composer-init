@@ -63,8 +63,9 @@ class CopyrightPrompt implements PromptInterface
     public function getDefaults()
     {
         $defaults = [];
+        $origin = $this->gitConfig->getOrigin();
 
-        if (($origin = $this->gitConfig->getOrigin())) {
+        if (null !== $origin) {
             $repo = $this->github->get("/repos/{$origin}")->json();
 
             if (isset($repo['organization'])) {
