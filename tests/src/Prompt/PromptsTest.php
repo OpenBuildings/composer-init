@@ -31,6 +31,7 @@ class PromptsTest extends PHPUnit_Framework_TestCase
             'prompt.copyright'          => 'CL\ComposerInit\Prompt\CopyrightPrompt',
             'prompt.description'        => 'CL\ComposerInit\Prompt\DescriptionPrompt',
             'prompt.php_namespace'      => 'CL\ComposerInit\Prompt\PhpNamespacePrompt',
+            'prompt.package_name'       => 'CL\ComposerInit\Prompt\PackageNamePrompt',
             'prompt.slack_notification' => 'CL\ComposerInit\Prompt\SlackNotificationPrompt',
             'prompt.title'              => 'CL\ComposerInit\Prompt\TitlePrompt',
         ];

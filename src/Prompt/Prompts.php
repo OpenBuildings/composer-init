@@ -70,6 +70,10 @@ class Prompts
             return new PhpNamespacePrompt($container['git_config'], $container['inflector']);
         };
 
+        $this->container['prompt.package_name'] = function ($container) {
+            return new PackageNamePrompt($container['git_config']);
+        };
+
         $this->container['prompt.slack_notification'] = function () {
             return new SlackNotificationPrompt();
         };
