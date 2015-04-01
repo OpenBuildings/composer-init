@@ -51,7 +51,7 @@ class PhpNamespacePrompt implements PromptInterface
     public function getDefaults()
     {
         $origin = $this->gitConfig->getOrigin();
-        if ($origin) {
+        if (null !== $origin) {
             list($vendor, $name) = explode('/', $origin);
 
             return [

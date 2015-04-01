@@ -16,7 +16,7 @@ use GuzzleHttp\Client;
 class SearchCommand extends Command
 {
     /**
-     * @var GuzzleClient
+     * @var Client
      */
     private $packegist;
 
@@ -26,6 +26,7 @@ class SearchCommand extends Command
     public function __construct(Client $packegist)
     {
         parent::__construct();
+
         $this->packegist = $packegist;
     }
 

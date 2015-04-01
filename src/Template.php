@@ -83,11 +83,11 @@ class Template
 
     /**
      * Return contents of prompts.json file
-     * @return string
+     * @return array
      */
     public function getPromptNames()
     {
-        return json_decode($this->zip->getFromName($this->root.'prompts.json'), true);
+        return (array) json_decode($this->zip->getFromName($this->root.'prompts.json'), true);
     }
 
     /**
@@ -108,7 +108,7 @@ class Template
 
     /**
      * @param  string $filename
-     * @param  string $contents
+     * @param  string $content
      */
     public function putFile($filename, $content)
     {

@@ -59,7 +59,7 @@ class BugsPrompt implements PromptInterface
     {
         $origin = $this->gitConfig->getOrigin();
 
-        if ($origin) {
+        if (null !== $origin) {
             $repo = $this->github->get("/repos/{$origin}")->json();
             return "{$repo['html_url']}/issues/new";
         }

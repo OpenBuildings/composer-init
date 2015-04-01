@@ -19,7 +19,7 @@ class TitlePrompt implements PromptInterface
     private $github;
 
     /**
-     * @var Client
+     * @var GitConfig
      */
     private $gitConfig;
 
@@ -71,7 +71,7 @@ class TitlePrompt implements PromptInterface
     {
         $origin = $this->gitConfig->getOrigin();
 
-        if ($origin) {
+        if (null !== $origin) {
             $repo = $this->github->get("/repos/{$origin}")->json();
             return $this->inflector->title($repo['name']);
         }

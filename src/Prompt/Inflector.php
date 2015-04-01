@@ -7,10 +7,10 @@ class Inflector
     /**
      * Makes an underscored or dashed phrase human-readable.
      *
-     *     $str = $inflector->humanize('kittens-are-cats'); // "kittens are cats"
-     *     $str = $inflector->humanize('dogs_as_well');     // "dogs as well"
+     *     $string = $inflector->humanize('kittens-are-cats'); // "kittens are cats"
+     *     $string = $inflector->humanize('dogs_as_well');     // "dogs as well"
      *
-     * @param  string $str phrase to make human-readable
+     * @param  string $string phrase to make human-readable
      * @return string
      */
     public function humanize($string)
@@ -19,7 +19,7 @@ class Inflector
     }
 
     /**
-     * @param  string $str
+     * @param  string $string
      * @return string
      */
     public function title($string)
@@ -28,7 +28,7 @@ class Inflector
     }
 
     /**
-     * @param  string $str
+     * @param  string $string
      * @return string
      */
     public function titlecase($string)
@@ -37,7 +37,7 @@ class Inflector
     }
 
     /**
-     * @param  string $str
+     * @param  string $string
      * @return string
      */
     public function initials($string)
