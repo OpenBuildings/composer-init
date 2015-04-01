@@ -8,65 +8,51 @@ Composer Init
 
 Initialize a project based on a template, inspired by [grunt-init](https://github.com/gruntjs/grunt-init)
 
+Instalation
+-----------
+
+Install via composer
+
+```
+composer global require clippings/composer-init
+```
+
+This will install it to your user's global composer. If you already have ~/.composer/vendor/bin/ in your PATH you can start using it with
+```
+composer-init
+```
+otherwise you can do it by calling directly
+```
+~/.composer/vendor/bin/composer-init
+```
+
 Basic Usage
 -----------
 
-- create an new github repo
-- clone repo locally
-- find / create the appropriate template repo, using ``composer-init search``
-- inside your freshly cloned repo do ``composer-init use {template-package}``
-- answer the questions presented
+- ``composer-init search`` to discover templates
+- ``composer-init use {template-package}`` in an empty folder to use a template
+
+Composer Init asumes the package is on github, so if you create a github repo first, it will get data like title/description issues url from it
 
 Creating Templates
 ------------------
 
-To be able to discover and use your own templates, you need to create a simple github repo, and add it to packegist.
+Templates are just files with placeholders, and a prompts.json file to tell how to fill those places
 
-- composer type has be "composer-init-template"
-- all the template files (that will later be in the main repo) have to go to "root" folder
-- has to have Template.php file  with ``Template`` class and ``getTemplateValues`` method.
+Here's a list of available prompts:
+
+- author_email : Use git config user.email as default
+- author_name : Use git config user.name as default
+- bugs : "Submit new bug / issues url" defaults to gihub.com/:repo/issues/new url
+- copyright : "{year}, {copyright holder}" where copyright holder defaults to github organization / github user
+- description : Defaults to github description
+- php_namespace : Use package name to guess phpnamespace
+- package_name : Package name
+- slack_notification : Enter an encrypted slack key, to be easily put in a travis.yml file
+- title : Defaults to github title
 
 Here's an example:
 https://github.com/clippings/package-template/
-
-``getTemplateValues`` must return a key => value array that will be used for placeholders inside your templates. Placeholders are in the format ``{%name%}``, similar to grunt-init.
-
-For conveniece, composer-init has some default "prompt" classes that ask you to enter values for the placeholders, and get their default values from the github api.
-
-Prompts
--------
-
-__Title__ - get the title from github api, adds "title" and "title\_underline" placeholders. The underline is useful for the README.md file, below the title.
-
-__PHPNamespace__ - guess the php namespace, using the repo name. 2 versions as autocompletes - short and long ones. Adds "php\_namespace" and "php\_namespace\_escaped". The escaped version can be used inside php strings as the backslash is escaped.
-
-__Description__ - get the description from github api, adds "description" placeholder.
-
-__Copyright__ - get the organization and owner of the repo and set one of them for copyright. adds 2 placeholders: "copyright" (year, org) and "copyright_entity (org)". If there is no organization, the owner is used.
-
-__AuthorName__ - get the author name from git config, add "author_name" placeholder
-
-__AuthorEmail__ - get the author email from git config, add "author_email" placeholder
-
-Custom Dialogs
---------------
-
-You can use your own dialogs inside ``getTemplateValues``:
-
-```php
-class Template {
-
-    public static function getTemplateValues(OutputInterface $output, TemplateHelper $template)
-    {
-        $values = array();
-        $dialog = $template->getHelperSet()->get('dialog');
-
-        $values['name'] = $dialog->ask($output, 'What do you want as a name?');
-
-        return $value;
-    }
-}
-```
 
 ## License
 
