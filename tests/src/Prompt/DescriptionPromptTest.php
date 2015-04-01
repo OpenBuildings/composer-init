@@ -3,6 +3,7 @@
 namespace CL\ComposerInit\Test\Prompt;
 
 use PHPUnit_Framework_TestCase;
+use CL\ComposerInit\Test\ClientMock;
 use CL\ComposerInit\Prompt\DescriptionPrompt;
 use CL\ComposerInit\Prompt\GitConfig;
 use Symfony\Component\Console\Output\NullOutput;
@@ -20,7 +21,7 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
     public function testConstruct()
     {
         $GitConfig = new GitConfig();
-        $github = new GithubMock();
+        $github = new ClientMock();
         $prompt = new DescriptionPrompt($GitConfig, $github);
 
         $this->assertSame($GitConfig, $prompt->getGitConfig());
@@ -28,7 +29,7 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefault
+     * @covers ::getDefault
      */
     public function testGetDefaultNull()
     {
@@ -40,7 +41,7 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
             ->method('getOrigin')
             ->willReturn(null);
 
-        $github = new GithubMock();
+        $github = new ClientMock();
         $prompt = new DescriptionPrompt($gitConfig, $github);
 
         $this->assertNull($prompt->getDefault());
@@ -48,7 +49,7 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefault
+     * @covers ::getDefault
      */
     public function testGetDefaultGithub()
     {
@@ -60,8 +61,8 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
             ->method('getOrigin')
             ->willReturn('octocat/Hello-World');
 
-        $github = new GithubMock();
-        $github->queueResponse('repo.json');
+        $github = new ClientMock();
+        $github->queueResponse('github/repo.json');
 
         $prompt = new DescriptionPrompt($gitConfig, $github);
 
@@ -77,7 +78,7 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getValues
+     * @covers ::getValues
      */
     public function testGetValues()
     {

@@ -3,9 +3,10 @@
 namespace CL\ComposerInit\Test\Prompt;
 
 use PHPUnit_Framework_TestCase;
+use CL\ComposerInit\Test\ClientMock;
+use Symfony\Component\Console\Output\NullOutput;
 use CL\ComposerInit\Prompt\CopyrightPrompt;
 use CL\ComposerInit\Prompt\GitConfig;
-use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * @coversDefaultClass CL\ComposerInit\Prompt\CopyrightPrompt
@@ -15,11 +16,12 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
     /**
      * @covers ::__construct
      * @covers ::getGitConfig
+     * @covers ::getGithub
      */
     public function testConstruct()
     {
         $gitConfig = new GitConfig();
-        $github = new GithubMock();
+        $github = new ClientMock();
         $prompt = new CopyrightPrompt($gitConfig, $github);
 
         $this->assertSame($gitConfig, $prompt->getGitConfig());
@@ -27,7 +29,7 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefaults
+     * @covers ::getDefaults
      */
     public function testGetDefaultsMinimal()
     {
@@ -44,7 +46,7 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('user.name'))
             ->willReturn(null);
 
-        $github = new GithubMock();
+        $github = new ClientMock();
 
         $prompt = new CopyrightPrompt($gitConfig, $github);
 
@@ -55,7 +57,7 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefaults
+     * @covers ::getDefaults
      */
     public function testGetDefaultsGitConfig()
     {
@@ -72,7 +74,7 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('user.name'))
             ->willReturn('TEST_USER');
 
-        $github = new GithubMock();
+        $github = new ClientMock();
 
         $prompt = new CopyrightPrompt($gitConfig, $github);
 
@@ -83,7 +85,7 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefaults
+     * @covers ::getDefaults
      */
     public function testGetDefaultsFull()
     {
@@ -100,11 +102,11 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('user.name'))
             ->willReturn('TEST_USER');
 
-        $github = new GithubMock();
+        $github = new ClientMock();
         $github
-            ->queueResponse('repo.json')
-            ->queueResponse('organization.json')
-            ->queueResponse('user.json');
+            ->queueResponse('github/repo.json')
+            ->queueResponse('github/organization.json')
+            ->queueResponse('github/user.json');
 
         $prompt = new CopyrightPrompt($gitConfig, $github);
 
@@ -119,7 +121,23 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getValues
+     * @covers ::prependToArray
+     */
+    public function testPrependToArray()
+    {
+        $prompt = $this
+            ->getMockBuilder('CL\ComposerInit\Prompt\CopyrightPrompt')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $result = $prompt->prependToArray('TEST', ['test', 'test2']);
+
+        $this->assertEquals(['TESTtest', 'TESTtest2'], $result);
+    }
+
+    /**
+     * @covers ::getValues
      */
     public function testGetValues()
     {

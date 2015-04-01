@@ -3,10 +3,11 @@
 namespace CL\ComposerInit\Test\Prompt;
 
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\Console\Output\NullOutput;
+use CL\ComposerInit\Test\ClientMock;
 use CL\ComposerInit\Prompt\TitlePrompt;
 use CL\ComposerInit\Prompt\GitConfig;
 use CL\ComposerInit\Prompt\Inflector;
-use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * @coversDefaultClass CL\ComposerInit\Prompt\TitlePrompt
@@ -15,14 +16,14 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers ::__construct
-     * @covers ::getConfig
+     * @covers ::getGitConfig
      * @covers ::getGithub
      * @covers ::getInflector
      */
     public function testConstruct()
     {
         $gitConfig = new GitConfig();
-        $github = new GithubMock();
+        $github = new ClientMock();
         $inflector = new Inflector();
         $prompt = new TitlePrompt($gitConfig, $github, $inflector);
 
@@ -32,7 +33,7 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefault
+     * @covers ::getDefault
      */
     public function testGetDefaultNull()
     {
@@ -53,7 +54,7 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
             ->with(getcwd())
             ->willReturn('INFLECTED');
 
-        $github = new GithubMock();
+        $github = new ClientMock();
         $prompt = new TitlePrompt($getConfig, $github, $inflector);
 
         $this->assertEquals('INFLECTED', $prompt->getDefault());
@@ -61,7 +62,7 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefault
+     * @covers ::getDefault
      */
     public function testGetDefaultGithub()
     {
@@ -73,8 +74,8 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
             ->method('getOrigin')
             ->willReturn('octocat/Hello-World');
 
-        $github = new GithubMock();
-        $github->queueResponse('repo.json');
+        $github = new ClientMock();
+        $github->queueResponse('github/repo.json');
 
         $inflector = new Inflector();
 
@@ -92,7 +93,7 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getValues
+     * @covers ::getValues
      */
     public function testGetValues()
     {

@@ -25,7 +25,7 @@ class AuthorNamePromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefault
+     * @covers ::getDefault
      */
     public function testGetDefault()
     {
@@ -44,7 +44,7 @@ class AuthorNamePromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getValues
+     * @covers ::getValues
      */
     public function testGetValues()
     {

@@ -6,7 +6,7 @@ Composer Init
 [![Code Coverage](https://scrutinizer-ci.com/g/clippings/composer-init/badges/coverage.png?s=3d5fb55c42c6887679915320658b543ed935e00a)](https://scrutinizer-ci.com/g/clippings/composer-init/)
 [![Latest Stable Version](https://poser.pugx.org/clippings/composer-init/v/stable.png)](https://packagist.org/packages/clippings/composer-init)
 
-Initialize a composer package based on a template package, inspired by [grunt-init](https://github.com/gruntjs/grunt-init)
+Initialize a project based on a template, inspired by [grunt-init](https://github.com/gruntjs/grunt-init)
 
 Basic Usage
 -----------

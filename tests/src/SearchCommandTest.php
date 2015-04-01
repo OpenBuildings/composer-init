@@ -5,7 +5,7 @@ namespace CL\ComposerInit\Test;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use CL\ComposerInit\SearchCommand;
-use GuzzleHttp\Client;
+use Symfony\Component\Console\Application;
 
 /**
  * @coversDefaultClass CL\ComposerInit\SearchCommand
@@ -19,7 +19,7 @@ class SearchCommandTest extends PHPUnit_Framework_TestCase
      */
     public function testConstruct()
     {
-        $client = new Client();
+        $client = new ClientMock();
         $command = new SearchCommand($client);
 
         $this->assertSame($client, $command->getPackegist());
@@ -30,8 +30,8 @@ class SearchCommandTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTemplates()
     {
-        $client = new PackagistMock();
-        $client->queueResponse('list.json');
+        $client = new ClientMock();
+        $client->queueResponse('packagist/list.json');
 
         $command = new SearchCommand($client);
 
@@ -57,7 +57,7 @@ class SearchCommandTest extends PHPUnit_Framework_TestCase
         $templates = ['value1', 'value2', 'other'];
         $expected = ['value1', 'value2'];
 
-        $command = new SearchCommand(new Client());
+        $command = new SearchCommand(new ClientMock());
 
         $filtered = $command->filterWith($templates, 'value');
         $this->assertEquals($expected, $filtered);
@@ -68,15 +68,18 @@ class SearchCommandTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $client = new PackagistMock();
+        $client = new ClientMock();
         $client
-            ->queueResponse('list.json')
-            ->queueResponse('list.json')
-            ->queueResponse('list.empty.json');
+            ->queueResponse('packagist/list.json')
+            ->queueResponse('packagist/list.json')
+            ->queueResponse('packagist/list.empty.json');
 
         $command = new SearchCommand($client);
 
-        $tester = new CommandTester($command);
+        $console = new Application();
+        $console->add($command);
+
+        $tester = new CommandTester($console->get('search'));
 
         $tester->execute([]);
         $expected = <<<RESPONSE
@@ -104,8 +107,5 @@ No templates found
 RESPONSE;
         $tester->execute([]);
         $this->assertEquals($expected, $tester->getDisplay());
-
-
     }
-
 }

@@ -18,6 +18,7 @@ class PhpNamespacePromptTest extends PHPUnit_Framework_TestCase
     /**
      * @covers ::__construct
      * @covers ::getGitConfig
+     * @covers ::getInflector
      */
     public function testConstruct()
     {
@@ -30,7 +31,7 @@ class PhpNamespacePromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefaults
+     * @covers ::getDefaults
      */
     public function testGetDefaultsNull()
     {
@@ -49,7 +50,7 @@ class PhpNamespacePromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefaults
+     * @covers ::getDefaults
      */
     public function testGetDefaultsGithub()
     {
@@ -76,7 +77,7 @@ class PhpNamespacePromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getValues
+     * @covers ::getValues
      */
     public function testGetValues()
     {

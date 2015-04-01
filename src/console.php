@@ -6,9 +6,9 @@ use CL\ComposerInit\SearchCommand;
 use CL\ComposerInit\UseCommand;
 
 
-$console = new Application('Composer Init', '2.0');
+$console = new Application('Composer Init', '0.2');
 
-$packegist = new Client('https://packagist.org');
+$packegist = new Client(['base_url' => 'https://packagist.org']);
 $console->add(new SearchCommand($packegist));
 $console->add(new UseCommand($packegist));
 

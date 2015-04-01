@@ -1,6 +1,6 @@
 <?php
 
-namespace CL\ComposerInit\Test\Prompt;
+namespace CL\ComposerInit\Test;
 
 use GuzzleHttp\Subscriber\Mock;
 use GuzzleHttp\Subscriber\History;
@@ -8,7 +8,7 @@ use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Client;
 
-class GithubMock extends Client
+class ClientMock extends Client
 {
     private $history;
     private $mock;
@@ -36,7 +36,7 @@ class GithubMock extends Client
 
     public function queueResponse($fileName)
     {
-        $json = file_get_contents(__DIR__.'/../../responses/github/'.$fileName);
+        $json = file_get_contents(__DIR__.'/../responses/'.$fileName);
 
         $this->mock->addResponse(
             new Response(200, [], Stream::factory($json))

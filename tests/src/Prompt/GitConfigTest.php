@@ -59,8 +59,9 @@ class GitConfigTest extends PHPUnit_Framework_TestCase
         $gitConfig
             ->method('get')
             ->with('remote.origin.url')
-            ->willReturn($url);
+            ->will($this->onConsecutiveCalls(null, $url));
 
+        $this->assertEquals(null, $gitConfig->getOrigin());
         $this->assertEquals($value, $gitConfig->getOrigin());
     }
 }

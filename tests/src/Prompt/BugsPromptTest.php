@@ -3,9 +3,10 @@
 namespace CL\ComposerInit\Test\Prompt;
 
 use PHPUnit_Framework_TestCase;
+use CL\ComposerInit\Test\ClientMock;
+use Symfony\Component\Console\Output\NullOutput;
 use CL\ComposerInit\Prompt\BugsPrompt;
 use CL\ComposerInit\Prompt\GitConfig;
-use Symfony\Component\Console\Output\NullOutput;
 use Closure;
 use RuntimeException;
 
@@ -17,11 +18,12 @@ class BugsPromptTest extends PHPUnit_Framework_TestCase
     /**
      * @covers ::__construct
      * @covers ::getGitConfig
+     * @covers ::getGithub
      */
     public function testConstruct()
     {
         $gitConfig = new GitConfig();
-        $github = new GithubMock();
+        $github = new ClientMock();
         $prompt = new BugsPrompt($gitConfig, $github);
 
         $this->assertSame($gitConfig, $prompt->getGitConfig());
@@ -29,7 +31,7 @@ class BugsPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefault
+     * @covers ::getDefault
      */
     public function testGetDefaultNull()
     {
@@ -41,7 +43,7 @@ class BugsPromptTest extends PHPUnit_Framework_TestCase
             ->method('getOrigin')
             ->willReturn(null);
 
-        $github = new GithubMock();
+        $github = new ClientMock();
         $prompt = new BugsPrompt($gitConfig, $github);
 
         $this->assertNull($prompt->getDefault());
@@ -49,7 +51,7 @@ class BugsPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getDefault
+     * @covers ::getDefault
      */
     public function testGetDefaultGithub()
     {
@@ -61,8 +63,8 @@ class BugsPromptTest extends PHPUnit_Framework_TestCase
             ->method('getOrigin')
             ->willReturn('octocat/Hello-World');
 
-        $github = new GithubMock();
-        $github->queueResponse('repo.json');
+        $github = new ClientMock();
+        $github->queueResponse('github/repo.json');
 
         $prompt = new BugsPrompt($gitConfig, $github);
 
@@ -78,7 +80,7 @@ class BugsPromptTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers getValues
+     * @covers ::getValues
      */
     public function testGetValues()
     {

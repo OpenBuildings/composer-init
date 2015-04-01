@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\NullOutput;
 class SlackNotificationPromptTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @covers getValues
+     * @covers ::getValues
      */
     public function testGetValues()
     {

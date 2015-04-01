@@ -2,197 +2,178 @@
 
 namespace CL\ComposerInit\Test;
 
-use CL\ComposerInit\ComposerInitApplication;
-use CL\ComposerInit\UseCommand;
+use PHPUnit_Framework_TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use CL\EnvBackup\DirectoryParam;
+use CL\ComposerInit\UseCommand;
+use Symfony\Component\Console\Application;
 
-class UseCommandTest extends AbstractTestCase
+/**
+ * @coversDefaultClass CL\ComposerInit\UseCommand
+ */
+class UseCommandTest extends PHPUnit_Framework_TestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->application = new ComposerInitApplication();
-
-        $this->output = new DummyOutput();
-    }
-
-    public function testGetDestination()
-    {
-        $use = new UseCommand('use');
-
-        $this->assertEquals('.', $use->getDestination());
-    }
-
     /**
-     * @covers CL\ComposerInit\UseCommand::moveFiles
+     * @covers ::__construct
+     * @covers ::getPackegist
+     * @covers ::configure
      */
-    public function testMoveFiles()
+    public function testConstruct()
     {
-        $dirFrom = dirname(__FILE__).'/../test_dir1';
-        $dirTo = dirname(__FILE__).'/../test_dir2';
+        $client = new ClientMock();
+        $command = new UseCommand($client);
 
-        $this->env
-            ->add(
-                new DirectoryParam($dirFrom, array(
-                    'test1' => 'test1',
-                    'dir1' => array(
-                        'test2' => 'new',
-                    )
-                ))
-            )
-            ->add(
-                new DirectoryParam($dirTo, array(
-                    'dir1' => array(
-                        'test2' => 'old',
-                        'test4' => 'test4',
-                    )
-                ))
-            )
-            ->apply();
-
-        $use = new UseCommand('use');
-
-        $use->moveFiles($dirFrom, $dirTo);
-
-        $this->assertFileExists($dirTo.'/test1');
-        $this->assertFileExists($dirTo.'/dir1/test2');
-        $this->assertFileExists($dirTo.'/dir1/test4');
-        $this->assertEquals('new', file_get_contents($dirTo.'/dir1/test2'));
+        $this->assertSame($client, $command->getPackegist());
     }
 
     /**
-     * @covers CL\ComposerInit\UseCommand::deleteDir
+     * @covers ::getPackageZipUrl
      */
-    public function testDeleteDir()
+    public function testGetPackageZipUrl()
     {
-        $dir = dirname(__FILE__).'/../testVariables';
+        $client = new ClientMock();
+        $client->queueResponse('packagist/package.json');
 
-        $this->env
-            ->add(
-                new DirectoryParam($dir, array(
-                    'dir1' => array(
-                        'test2' => 'test',
-                        'dir2' => array(
-                            'test' => 'test',
-                        ),
-                    )
-                ))
-            )
-            ->apply();
+        $command = new UseCommand($client);
 
-        $use = new UseCommand('use');
+        $url = $command->getPackageZipUrl('clippings/package-template');
+        $expected = 'https://api.github.com/repos/clippings/package-template/zipball/60c22c4aa0ae0afc3b0d7176a7154a9f2a005c0c';
+        $this->assertEquals($expected, $url);
 
-        $use->deleteDir($dir.'/dir1');
-
-        $this->assertFileNotExists($dir.'/dir1/test2');
-        $this->assertFileNotExists($dir.'/dir1/test2/test');
+        $this->assertEquals(
+            '/packages/clippings/package-template.json',
+            $client->getHistory()->getLastRequest()->getUrl()
+        );
     }
 
     /**
-     * @covers CL\ComposerInit\UseCommand::setTemplateVariables
+     * @covers ::getPrompts
      */
-    public function testSetTemplateVariables()
+    public function testGetPrompts()
     {
-        $dir = dirname(__FILE__).'/../testVariables';
+        $command = new UseCommand(new ClientMock());
 
-        $this->env
-            ->add(
-                new DirectoryParam($dir, array(
-                    'test' => 'some place {%for%} template',
-                    'dir1' => array(
-                        'test2' => 'another {%place%} {%for%} template',
-                    )
-                ))
-            )
-            ->apply();
+        $prompts = $command->getPrompts();
 
-        $use = new UseCommand('use');
-
-        $use->setTemplateVariables($dir, array(
-            'for' => 'v1',
-            'place' => 'v2',
-            'missing' => 'v3',
-        ));
-
-        $this->assertEquals('some place v1 template', file_get_contents($dir.'/test'));
-        $this->assertEquals('another v2 v1 template', file_get_contents($dir.'/dir1/test2'));
+        $this->assertInstanceOf('CL\ComposerInit\Prompt\Prompts', $prompts);
     }
 
     /**
-     * @covers CL\ComposerInit\UseCommand::execute
+     * @covers ::getTemplate
+     */
+    public function testGetTemplate()
+    {
+        $command = $this
+            ->getMockBuilder('CL\ComposerInit\UseCommand')
+            ->disableOriginalConstructor()
+            ->setMethods(['getPackageZipUrl'])
+            ->getMock();
+
+        $command
+            ->method('getPackageZipUrl')
+            ->with('TEST_PACKAGE')
+            ->willReturn('file://'.__DIR__.'/../test.zip');
+
+        $template = $command->getTemplate('TEST_PACKAGE');
+
+        $this->assertInstanceOf('CL\ComposerInit\Template', $template);
+
+        $this->assertEquals(
+            'clippings-package-template-971a36f/',
+            $template->getRoot()
+        );
+    }
+
+    /**
+     * @covers ::execute
      */
     public function testExecute()
     {
-        $zipFile = dirname(__FILE__).'/../test.zip';
-        $testDir = dirname(__FILE__).'/../testdir';
+        $command = $this
+            ->getMockBuilder('CL\ComposerInit\UseCommand')
+            ->setConstructorArgs([new ClientMock()])
+            ->setMethods(['getTemplate', 'getPrompts'])
+            ->getMock();
 
-        $this->env
-            ->add(new DirectoryParam($testDir, array()))
-            ->apply();
+        $template = $this
+            ->getMockBuilder('CL\ComposerInit\Template')
+            ->disableOriginalConstructor()
+            ->setMethods(['getPromptNames', 'putInto'])
+            ->getMock();
 
-        $use = $this->getMock(
-            'CL\ComposerInit\UseCommand',
-            array('getDistUrl', 'getDestination')
-        );
+        $prompts = $this
+            ->getMockBuilder('CL\ComposerInit\Prompts')
+            ->setMethods(['getValues'])
+            ->getMock();
 
-        $dialog = $this->getMock(
-            'Symfony\Component\Console\Helper\DialogHelper',
-            array('ask', 'askConfirmation')
-        );
+        $command
+            ->method('getTemplate')
+            ->with('TEST_PACKAGE')
+            ->willReturn($template);
 
-        $template = $this->getMock(
-            'CL\ComposerInit\TemplateHelper',
-            array('getRepoField')
-        );
-
-        $helperSet = $this->application->getHelperSet();
-        $helperSet->set($dialog);
-        $helperSet->set($template);
-
-        $use->setHelperSet($helperSet);
-
-        $tester = new CommandTester($use);
-
-        $use
-            ->expects($this->any())
-            ->method('getDestination')
-            ->will($this->returnValue($testDir));
-
-        $use
-            ->expects($this->once())
-            ->method('getDistUrl')
-            ->with($this->equalTo('test-package'), $this->equalTo('dev-test'))
-            ->will($this->returnValue('file:://'.$zipFile));
+        $command
+            ->method('getPrompts')
+            ->willReturn($prompts);
 
         $template
-            ->expects($this->any())
-            ->method('getRepoField')
-            ->will($this->returnValue('testrepo'));
+            ->method('getPromptNames')
+            ->willReturn(['author_name', 'title']);
 
         $template
-            ->expects($this->any())
-            ->method('getGitConfig')
-            ->will($this->returnValue('author 1'));
+            ->method('putInto')
+            ->with(getcwd());
 
-        $dialog
-            ->expects($this->once())
-            ->method('askConfirmation')
-            ->will($this->returnValue('Y'));
+        $prompts
+            ->method('getValues')
+            ->with(
+                ['author_name', 'title'],
+                $this->isInstanceOf('Symfony\Component\Console\Output\OutputInterface'),
+                $this->isInstanceOf('Symfony\Component\Console\Helper\DialogHelper')
+            )
+            ->willReturn(['author_name' => 'VAL1', 'title' => 'VAL2']);
 
-        $dialog
-            ->expects($this->any())
-            ->method('ask')
-            ->will($this->onConsecutiveCalls('test name', 'author 2'));
 
-        $tester->execute(array('package' => 'test-package', 'release' => 'dev-test'));
+        $console = new Application();
+        $console->add($command);
 
-        $this->assertFileExists($testDir.'/README.md');
-        $this->assertFileExists($testDir.'/.gitignore');
-        $this->assertFileExists($testDir.'/src/Init.php');
+        $tester = new CommandTester($console->get('use'));
 
-        $this->assertContains('# Test Project Named test name', file_get_contents(($testDir.'/README.md')));
-        $this->assertContains('@author    author 2', file_get_contents(($testDir.'/src/Init.php')));
+        $dialog = $command->getHelper('dialog');
+        $dialog->setInputStream($this->getInputStream("y\n"));
+
+        $tester->execute(['package' => 'TEST_PACKAGE']);
+
+        $expected = <<<OUTPUT
+Enter Template variables (Press enter for default):
+Use These Variables:
+  author_name: VAL1
+  title: VAL2
+Confirm? (Y/n):Done
+
+OUTPUT;
+        $this->assertEquals($expected, $tester->getDisplay());
+
+
+        $dialog->setInputStream($this->getInputStream("n\n"));
+
+        $tester->execute(['package' => 'TEST_PACKAGE']);
+
+        $expected = <<<OUTPUT
+Enter Template variables (Press enter for default):
+Use These Variables:
+  author_name: VAL1
+  title: VAL2
+Confirm? (Y/n):Aborted
+
+OUTPUT;
+        $this->assertEquals($expected, $tester->getDisplay());
+    }
+
+    protected function getInputStream($input)
+    {
+        $stream = fopen('php://memory', 'r+', false);
+        fputs($stream, $input);
+        rewind($stream);
+
+        return $stream;
     }
 }
