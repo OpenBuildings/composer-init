@@ -52,6 +52,9 @@ class TemplateTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['a', 'b'], $template->getValues());
     }
 
+    /**
+     * @covers ::populateValues
+     */
     public function testPopulateValues()
     {
         $template = $this

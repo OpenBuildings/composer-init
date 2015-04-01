@@ -1,6 +1,8 @@
 <phpunit
  colors="true"
- bootstrap="vendor/autoload.php">
+ bootstrap="vendor/autoload.php"
+ backupGlobals="false"
+ forceCoversAnnotation="true">
   <testsuites>
     <testsuite>
       <directory>tests/src</directory>
