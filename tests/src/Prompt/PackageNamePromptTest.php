@@ -5,7 +5,7 @@ namespace CL\ComposerInit\Test\Prompt;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Console\Output\NullOutput;
 use CL\ComposerInit\Prompt\PackageNamePrompt;
-use CL\ComposerInit\Prompt\GitConfig;
+use CL\ComposerInit\GitConfig;
 
 /**
  * @coversDefaultClass CL\ComposerInit\Prompt\PackageNamePrompt
@@ -30,7 +30,7 @@ class PackageNamePromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefault()
     {
         $getConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $getConfig

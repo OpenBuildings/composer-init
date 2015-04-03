@@ -6,8 +6,8 @@ use PHPUnit_Framework_TestCase;
 use Symfony\Component\Console\Output\NullOutput;
 use CL\ComposerInit\Test\ClientMock;
 use CL\ComposerInit\Prompt\TitlePrompt;
-use CL\ComposerInit\Prompt\GitConfig;
-use CL\ComposerInit\Prompt\Inflector;
+use CL\ComposerInit\GitConfig;
+use CL\ComposerInit\Inflector;
 
 /**
  * @coversDefaultClass CL\ComposerInit\Prompt\TitlePrompt
@@ -38,7 +38,7 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultNull()
     {
         $getConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $getConfig
@@ -46,7 +46,7 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
             ->willReturn(null);
 
         $inflector = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\Inflector')
+            ->getMockBuilder('CL\ComposerInit\Inflector')
             ->getMock();
 
         $inflector
@@ -67,7 +67,7 @@ class TitlePromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultGithub()
     {
         $getConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $getConfig

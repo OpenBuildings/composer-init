@@ -4,8 +4,8 @@ namespace CL\ComposerInit\Test\Prompt;
 
 use PHPUnit_Framework_TestCase;
 use CL\ComposerInit\Prompt\PhpNamespacePrompt;
-use CL\ComposerInit\Prompt\GitConfig;
-use CL\ComposerInit\Prompt\Inflector;
+use CL\ComposerInit\GitConfig;
+use CL\ComposerInit\Inflector;
 use Symfony\Component\Console\Output\NullOutput;
 use Closure;
 use RuntimeException;
@@ -36,7 +36,7 @@ class PhpNamespacePromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultsNull()
     {
         $configMock = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $configMock
@@ -55,7 +55,7 @@ class PhpNamespacePromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultsGithub()
     {
         $configMock = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $configMock

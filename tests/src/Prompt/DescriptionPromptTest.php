@@ -5,7 +5,7 @@ namespace CL\ComposerInit\Test\Prompt;
 use PHPUnit_Framework_TestCase;
 use CL\ComposerInit\Test\ClientMock;
 use CL\ComposerInit\Prompt\DescriptionPrompt;
-use CL\ComposerInit\Prompt\GitConfig;
+use CL\ComposerInit\GitConfig;
 use Symfony\Component\Console\Output\NullOutput;
 
 /**
@@ -34,7 +34,7 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultNull()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $gitConfig
@@ -54,7 +54,7 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultGithub()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $gitConfig

@@ -6,7 +6,7 @@ use PHPUnit_Framework_TestCase;
 use CL\ComposerInit\Test\ClientMock;
 use Symfony\Component\Console\Output\NullOutput;
 use CL\ComposerInit\Prompt\CopyrightPrompt;
-use CL\ComposerInit\Prompt\GitConfig;
+use CL\ComposerInit\GitConfig;
 
 /**
  * @coversDefaultClass CL\ComposerInit\Prompt\CopyrightPrompt
@@ -34,7 +34,7 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultsMinimal()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $gitConfig
@@ -62,7 +62,7 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultsGitConfig()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $gitConfig
@@ -90,7 +90,7 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultsFull()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $gitConfig

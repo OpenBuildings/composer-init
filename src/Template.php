@@ -3,6 +3,7 @@
 namespace CL\ComposerInit;
 
 use ZipArchive;
+use GuzzleHttp\Client;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -32,18 +33,36 @@ class Template
     private $root;
 
     /**
+     * @var Client
+     */
+    private $github;
+
+    /**
      * @param string $url
      */
-    public function __construct($url)
+    public function __construct(Client $github)
+    {
+        $this->github = $github;
+    }
+
+    public function open($url)
     {
         $this->zipFile = tmpfile();
-
         $meta = stream_get_meta_data($this->zipFile);
-        file_put_contents($meta['uri'], fopen($url, 'r'));
+
+        $this->github->get($url, ['save_to' => $meta['uri']]);
 
         $this->zip = new ZipArchive();
         $this->zip->open($meta['uri'], ZIPARCHIVE::CHECKCONS);
         $this->root = $this->zip->getNameIndex(0);
+    }
+
+    /**
+     * @return Client
+     */
+    public function getGithub()
+    {
+        return $this->github;
     }
 
     /**

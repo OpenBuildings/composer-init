@@ -1,6 +1,6 @@
 <?php
 
-namespace CL\ComposerInit\Prompt;
+namespace CL\ComposerInit;
 
 class Inflector
 {

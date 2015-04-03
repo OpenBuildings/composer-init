@@ -12,13 +12,35 @@ class TemplateTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers ::__construct
+     * @covers ::getGithub
+     */
+    public function testConstruct()
+    {
+        $client = new ClientMock();
+        $template = new Template($client);
+
+        $this->assertSame($client, $template->getGithub());
+    }
+
+    /**
+     * @covers ::open
      * @covers ::getZip
      * @covers ::getRoot
      * @covers ::getPromptNames
      */
-    public function testConstruct()
+    public function testOpen()
     {
-        $template = new Template('file://'.__DIR__.'/../test.zip');
+        $client = new ClientMock();
+        $client->queueResponse('test.zip');
+
+        $template = new Template($client);
+
+        $template->open('TEST_URL');
+
+        $this->assertEquals(
+            'TEST_URL',
+            $client->getHistory()->getLastRequest()->getUrl()
+        );
 
         $zip = $template->getZip();
         $this->assertInstanceOf('ZipArchive', $zip);
@@ -31,25 +53,6 @@ class TemplateTest extends PHPUnit_Framework_TestCase
             ['title', 'description'],
             $template->getPromptNames()
         );
-    }
-
-    /**
-     * @covers ::setValues
-     * @covers ::getValues
-     */
-    public function testValues()
-    {
-        $template = $this
-            ->getMockBuilder('CL\ComposerInit\Template')
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
-
-        $this->assertEmpty($template->getValues());
-
-        $template->setValues(['a', 'b']);
-
-        $this->assertEquals(['a', 'b'], $template->getValues());
     }
 
     /**
@@ -77,15 +80,39 @@ class TemplateTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers ::setValues
+     * @covers ::getValues
+     */
+    public function testValues()
+    {
+        $template = $this
+            ->getMockBuilder('CL\ComposerInit\Template')
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $this->assertEmpty($template->getValues());
+
+        $template->setValues(['a', 'b']);
+
+        $this->assertEquals(['a', 'b'], $template->getValues());
+    }
+
+    /**
      * @covers ::putInto
      */
     public function testPutInto()
     {
+        $client = new ClientMock();
+        $client->queueResponse('test.zip');
+
         $template = $this
             ->getMockBuilder('CL\ComposerInit\Template')
-            ->setConstructorArgs(['file://'.__DIR__.'/../test.zip'])
+            ->setConstructorArgs([$client])
             ->setMethods(['putFile', 'putDir'])
             ->getMock();
+
+        $template->open('TEST');
 
         $template->setValues([
             'author_name' => 'AUTHOR',

@@ -4,6 +4,7 @@ namespace CL\ComposerInit\Prompt;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\DialogHelper;
+use CL\ComposerInit\GitConfig;
 use RuntimeException;
 
 /**

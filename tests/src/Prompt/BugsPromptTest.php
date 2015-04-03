@@ -6,7 +6,7 @@ use PHPUnit_Framework_TestCase;
 use CL\ComposerInit\Test\ClientMock;
 use Symfony\Component\Console\Output\NullOutput;
 use CL\ComposerInit\Prompt\BugsPrompt;
-use CL\ComposerInit\Prompt\GitConfig;
+use CL\ComposerInit\GitConfig;
 use Closure;
 use RuntimeException;
 
@@ -36,7 +36,7 @@ class BugsPromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultNull()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $gitConfig
@@ -56,7 +56,7 @@ class BugsPromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefaultGithub()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $gitConfig

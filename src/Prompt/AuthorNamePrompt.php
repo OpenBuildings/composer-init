@@ -2,6 +2,7 @@
 
 namespace CL\ComposerInit\Prompt;
 
+use CL\ComposerInit\GitConfig;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\DialogHelper;
 

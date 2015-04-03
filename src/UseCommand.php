@@ -22,12 +22,26 @@ class UseCommand extends Command
     private $packagist;
 
     /**
+     * @var Template
+     */
+    private $template;
+
+    /**
+     * @var Prompts
+     */
+    private $prompts;
+
+    /**
+     * @param Template $template
+     * @param Prompts $prompts
      * @param Client $packagist
      */
-    public function __construct(Client $packagist)
+    public function __construct(Template $template, Prompts $prompts, Client $packagist)
     {
         parent::__construct();
 
+        $this->template = $template;
+        $this->prompts = $prompts;
         $this->packagist = $packagist;
     }
 
@@ -37,6 +51,22 @@ class UseCommand extends Command
     public function getPackegist()
     {
         return $this->packagist;
+    }
+
+    /**
+     * @return Template
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * @return Prompts
+     */
+    public function getPrompts()
+    {
+        return $this->prompts;
     }
 
     protected function configure()
@@ -51,29 +81,18 @@ class UseCommand extends Command
             );
     }
 
-    public function getTemplate($packageName)
-    {
-        return new Template($this->getPackageZipUrl($packageName));
-    }
-
-    public function getPrompts()
-    {
-        return new Prompts();
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $packageName = $input->getArgument('package');
         $dialog = $this->getHelperSet()->get('dialog');
 
-        $template = $this->getTemplate($packageName);
-        $prompts = $this->getPrompts();
+        $this->template->open($this->getPackageZipUrl($packageName));
 
         $output->writeln('Enter Template variables (Press enter for default):');
 
-        $template->setValues(
-            $prompts->getValues(
-                $template->getPromptNames(),
+        $this->template->setValues(
+            $this->prompts->getValues(
+                $this->template->getPromptNames(),
                 $output,
                 $dialog
             )
@@ -81,14 +100,14 @@ class UseCommand extends Command
 
         $valuesDisplay = "Use These Variables:\n";
 
-        foreach ($template->getValues() as $key => $value) {
+        foreach ($this->template->getValues() as $key => $value) {
             $valuesDisplay .= "  <info>$key</info>: $value\n";
         }
 
         $valuesDisplay .= "Confirm? <comment>(Y/n)</comment>:";
 
         if ($dialog->askConfirmation($output, $valuesDisplay, 'y')) {
-            $template->putInto(getcwd());
+            $this->template->putInto(getcwd());
             $output->writeln('Done');
         } else {
             $output->writeln('<error>Aborted</error>');

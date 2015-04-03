@@ -3,6 +3,8 @@
 namespace CL\ComposerInit\Prompt;
 
 use GuzzleHttp\Client;
+use CL\ComposerInit\GitConfig;
+use CL\ComposerInit\Inflector;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\DialogHelper;
 

@@ -5,7 +5,8 @@ namespace CL\ComposerInit\Prompt;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\DialogHelper;
 use GuzzleHttp\Client;
-use Pimple\Container;
+use CL\ComposerInit\GitConfig;
+use CL\ComposerInit\Inflector;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -15,81 +16,77 @@ use Pimple\Container;
 class Prompts
 {
     /**
-     * @var Container
+     * @var PromptInterface[]
      */
-    private $container;
+    private $prompts;
+
+    /**
+     * @var Client
+     */
+    private $github;
+
+    /**
+     * @var GitConfig
+     */
+    private $gitConfig;
+
+    /**
+     * @var Inflector
+     */
+    private $inflector;
+
+    public function __construct(GitConfig $gitConfig, Client $github, Inflector $inflector)
+    {
+        $this->github = $github;
+        $this->gitConfig = $gitConfig;
+        $this->inflector = $inflector;
+
+        $this->add('author_email', new AuthorEmailPrompt($this->gitConfig));
+        $this->add('author_name', new AuthorNamePrompt($this->gitConfig));
+        $this->add('bugs', new BugsPrompt($this->gitConfig, $this->github));
+        $this->add('copyright', new CopyrightPrompt($this->gitConfig, $this->github));
+        $this->add('description', new DescriptionPrompt($this->gitConfig, $this->github));
+        $this->add('php_namespace', new PhpNamespacePrompt($this->gitConfig, $this->inflector));
+        $this->add('package_name', new PackageNamePrompt($this->gitConfig));
+        $this->add('slack_notification', new SlackNotificationPrompt());
+        $this->add('title', new TitlePrompt($this->gitConfig, $this->github, $this->inflector));
+    }
+
+    /**
+     * @return Client
+     */
+    public function getGithub()
+    {
+        return $this->github;
+    }
+
+    /**
+     * @return GitConfig
+     */
+    public function getGitConfig()
+    {
+        return $this->gitConfig;
+    }
+
+    /**
+     * @return Inflector
+     */
+    public function getInflector()
+    {
+        return $this->inflector;
+    }
 
     /**
      * @return Container
      */
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
-    public function __construct()
-    {
-        $this->container = new Container();
-
-        $this->container['github'] = function () {
-            return new Client(['base_url' => 'https://api.github.com']);
-        };
-
-        $this->container['git_config'] = function () {
-            return new GitConfig();
-        };
-
-        $this->container['inflector'] = function () {
-            return new Inflector();
-        };
-
-        # Prompts
-        # --------------------
-
-        $this->container['prompt.author_email'] = function ($container) {
-            return new AuthorEmailPrompt($container['git_config']);
-        };
-
-        $this->container['prompt.author_name'] = function ($container) {
-            return new AuthorNamePrompt($container['git_config']);
-        };
-
-        $this->container['prompt.bugs'] = function ($container) {
-            return new BugsPrompt($container['git_config'], $container['github']);
-        };
-
-        $this->container['prompt.copyright'] = function ($container) {
-            return new CopyrightPrompt($container['git_config'], $container['github']);
-        };
-
-        $this->container['prompt.description'] = function ($container) {
-            return new DescriptionPrompt($container['git_config'], $container['github']);
-        };
-
-        $this->container['prompt.php_namespace'] = function ($container) {
-            return new PhpNamespacePrompt($container['git_config'], $container['inflector']);
-        };
-
-        $this->container['prompt.package_name'] = function ($container) {
-            return new PackageNamePrompt($container['git_config']);
-        };
-
-        $this->container['prompt.slack_notification'] = function () {
-            return new SlackNotificationPrompt();
-        };
-
-        $this->container['prompt.title'] = function ($container) {
-            return new TitlePrompt($container['git_config'], $container['github'], $container['inflector']);
-        };
-    }
-
-    /**
-     * @param  string $name
-     * @return PromptInterface
-     */
     public function get($name)
     {
-        return $this->container["prompt.{$name}"];
+        return $this->prompts[$name];
+    }
+
+    public function add($name, PromptInterface $prompt)
+    {
+        $this->prompts[$name] = $prompt;
     }
 
     /**

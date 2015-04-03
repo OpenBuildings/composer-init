@@ -1,12 +1,12 @@
 <?php
 
-namespace CL\ComposerInit\Prompt\Test;
+namespace CL\ComposerInit\Test;
 
-use CL\ComposerInit\Prompt\GitConfig;
+use CL\ComposerInit\GitConfig;
 use PHPUnit_Framework_TestCase;
 
 /**
- * @coversDefaultClass CL\ComposerInit\Prompt\GitConfig
+ * @coversDefaultClass CL\ComposerInit\GitConfig
  */
 class GitConfigTest extends PHPUnit_Framework_TestCase
 {
@@ -25,13 +25,13 @@ class GitConfigTest extends PHPUnit_Framework_TestCase
     public function testGet()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->setMethods(['shell'])
             ->getMock();
 
         $gitConfig
             ->method('shell')
-            ->with('git option CONFIG_NAME')
+            ->with('git config CONFIG_NAME')
             ->willReturn('VALUE');
 
         $this->assertEquals('VALUE', $gitConfig->get('CONFIG_NAME'));
@@ -52,7 +52,7 @@ class GitConfigTest extends PHPUnit_Framework_TestCase
     public function testGetOrigin($url, $value)
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->setMethods(['get'])
             ->getMock();
 

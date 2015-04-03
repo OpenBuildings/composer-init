@@ -1,6 +1,6 @@
 <?php
 
-namespace CL\ComposerInit\Prompt;
+namespace CL\ComposerInit;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -15,7 +15,7 @@ class GitConfig
      */
     public function get($option)
     {
-        return $this->shell("git option $option");
+        return $this->shell("git config $option");
     }
 
     /**
@@ -34,10 +34,11 @@ class GitConfig
     {
         $origin = $this->get('remote.origin.url');
 
-        if (null !== $origin) {
-            preg_match('/^.*github.com[:\/](.*).git$/', $origin, $matches);
-
-            return $matches[1];
+        if ($origin) {
+            if (preg_match('/^.*github.com[:\/](.*).git$/', $origin, $matches));
+            {
+                return $matches[1];
+            }
         }
     }
 }

@@ -3,31 +3,37 @@
 namespace CL\ComposerInit;
 
 use GuzzleHttp\Client;
+use CL\ComposerInit\Prompt\Prompts;
 use CL\ComposerInit\SearchCommand;
 use CL\ComposerInit\UseCommand;
 
 class Application extends \Symfony\Component\Console\Application
 {
     /**
-     * @var Client
+     * @var Container
      */
-    private $packegist;
+    private $app;
 
     public function __construct()
     {
         parent::__construct('Composer Init', '0.3');
 
-        $this->packegist = new Client(['base_url' => 'https://packagist.org']);
+        $packegist = new Client(['base_url' => 'https://packagist.org']);
+        $token = new Token($_SERVER['HOME'].'/.composer-init');
 
-        $this->add(new SearchCommand($this->packegist));
-        $this->add(new UseCommand($this->packegist));
-    }
+        $github = new Client(['base_url' => 'https://api.github.com']);
 
-    /**
-     * @return Client
-     */
-    public function getPackegist()
-    {
-        return $this->packegist;
+        if (null !== $token->get()) {
+            $github->setDefaultOption('query/access_token', $token->get());
+        }
+
+        $gitConfig = new GitConfig();
+        $inflector = new Inflector();
+        $prompts = new Prompts($gitConfig, $github, $inflector);
+        $template = new Template($github);
+
+        $this->add(new SearchCommand($packegist));
+        $this->add(new UseCommand($template, $prompts, $packegist));
+        $this->add(new TokenCommand($token));
     }
 }

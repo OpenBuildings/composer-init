@@ -4,6 +4,9 @@ namespace CL\ComposerInit\Test\Prompt;
 
 use PHPUnit_Framework_TestCase;
 use CL\ComposerInit\Prompt\Prompts;
+use CL\ComposerInit\Inflector;
+use CL\ComposerInit\GitConfig;
+use GuzzleHttp\Client;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Helper\DialogHelper;
 
@@ -14,48 +17,67 @@ class PromptsTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers ::__construct
-     * @covers ::getContainer
+     * @covers ::getGithub
+     * @covers ::getGitConfig
+     * @covers ::getInflector
+     * @covers ::get
+     * @covers ::add
      */
     public function testConstruct()
     {
-        $prompts = new Prompts();
-        $this->assertInstanceOf('Pimple\Container', $prompts->getContainer());
+        $github = new Client();
+        $gitConfig = new GitConfig();
+        $inflector = new Inflector();
 
-        $contants = [
-            'github'                    => 'GuzzleHttp\Client',
-            'git_config'                => 'CL\ComposerInit\Prompt\GitConfig',
-            'inflector'                 => 'CL\ComposerInit\Prompt\Inflector',
-            'prompt.author_email'       => 'CL\ComposerInit\Prompt\AuthorEmailPrompt',
-            'prompt.author_name'        => 'CL\ComposerInit\Prompt\AuthorNamePrompt',
-            'prompt.bugs'               => 'CL\ComposerInit\Prompt\BugsPrompt',
-            'prompt.copyright'          => 'CL\ComposerInit\Prompt\CopyrightPrompt',
-            'prompt.description'        => 'CL\ComposerInit\Prompt\DescriptionPrompt',
-            'prompt.php_namespace'      => 'CL\ComposerInit\Prompt\PhpNamespacePrompt',
-            'prompt.package_name'       => 'CL\ComposerInit\Prompt\PackageNamePrompt',
-            'prompt.slack_notification' => 'CL\ComposerInit\Prompt\SlackNotificationPrompt',
-            'prompt.title'              => 'CL\ComposerInit\Prompt\TitlePrompt',
-        ];
+        $prompts = new Prompts($gitConfig, $github, $inflector);
 
-        foreach ($contants as $key => $class) {
-            $this->assertInstanceOf(
-                $class,
-                $prompts->getContainer()->offsetGet($key)
-            );
-        }
+        $this->assertSame($github, $prompts->getGithub());
+        $this->assertSame($gitConfig, $prompts->getGitConfig());
+        $this->assertSame($inflector, $prompts->getInflector());
 
-        $this->assertEquals(array_keys($contants), $prompts->getContainer()->keys());
-    }
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\AuthorEmailPrompt',
+            $prompts->get('author_email')
+        );
 
-    /**
-     * @covers ::get
-     */
-    public function testGet()
-    {
-        $prompts = new Prompts();
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\AuthorNamePrompt',
+            $prompts->get('author_name')
+        );
 
-        $this->assertSame(
-            $prompts->get('author_email'),
-            $prompts->getContainer()->offsetGet('prompt.author_email')
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\BugsPrompt',
+            $prompts->get('bugs')
+        );
+
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\CopyrightPrompt',
+            $prompts->get('copyright')
+        );
+
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\DescriptionPrompt',
+            $prompts->get('description')
+        );
+
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\PhpNamespacePrompt',
+            $prompts->get('php_namespace')
+        );
+
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\PackageNamePrompt',
+            $prompts->get('package_name')
+        );
+
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\SlackNotificationPrompt',
+            $prompts->get('slack_notification')
+        );
+
+        $this->assertInstanceOf(
+            'CL\ComposerInit\Prompt\TitlePrompt',
+            $prompts->get('title')
         );
     }
 
@@ -93,6 +115,7 @@ class PromptsTest extends PHPUnit_Framework_TestCase
 
         $prompts = $this
             ->getMockBuilder('CL\ComposerInit\Prompt\Prompts')
+            ->disableOriginalConstructor()
             ->setMethods(['get'])
             ->getMock();
 

@@ -15,14 +15,29 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
     /**
      * @covers ::__construct
      * @covers ::getPackegist
+     * @covers ::getPrompts
+     * @covers ::getTemplate
      * @covers ::configure
      */
     public function testConstruct()
     {
-        $client = new ClientMock();
-        $command = new UseCommand($client);
+        $template = $this
+            ->getMockBuilder('CL\ComposerInit\Template')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->assertSame($client, $command->getPackegist());
+        $prompts = $this
+            ->getMockBuilder('CL\ComposerInit\Prompt\Prompts')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $packegist = new ClientMock();
+
+        $command = new UseCommand($template, $prompts, $packegist);
+
+        $this->assertSame($template, $command->getTemplate());
+        $this->assertSame($prompts, $command->getPrompts());
+        $this->assertSame($packegist, $command->getPackegist());
     }
 
     /**
@@ -30,10 +45,20 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
      */
     public function testGetPackageZipUrl()
     {
-        $client = new ClientMock();
-        $client->queueResponse('packagist/package.json');
+        $template = $this
+            ->getMockBuilder('CL\ComposerInit\Template')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $command = new UseCommand($client);
+        $prompts = $this
+            ->getMockBuilder('CL\ComposerInit\Prompt\Prompts')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $packegist = new ClientMock();
+        $packegist->queueResponse('packagist/package.json');
+
+        $command = new UseCommand($template, $prompts, $packegist);
 
         $url = $command->getPackageZipUrl('clippings/package-template');
         $expected = 'https://api.github.com/repos/clippings/package-template/zipball/60c22c4aa0ae0afc3b0d7176a7154a9f2a005c0c';
@@ -41,45 +66,7 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             '/packages/clippings/package-template.json',
-            $client->getHistory()->getLastRequest()->getUrl()
-        );
-    }
-
-    /**
-     * @covers ::getPrompts
-     */
-    public function testGetPrompts()
-    {
-        $command = new UseCommand(new ClientMock());
-
-        $prompts = $command->getPrompts();
-
-        $this->assertInstanceOf('CL\ComposerInit\Prompt\Prompts', $prompts);
-    }
-
-    /**
-     * @covers ::getTemplate
-     */
-    public function testGetTemplate()
-    {
-        $command = $this
-            ->getMockBuilder('CL\ComposerInit\UseCommand')
-            ->disableOriginalConstructor()
-            ->setMethods(['getPackageZipUrl'])
-            ->getMock();
-
-        $command
-            ->method('getPackageZipUrl')
-            ->with('TEST_PACKAGE')
-            ->willReturn('file://'.__DIR__.'/../test.zip');
-
-        $template = $command->getTemplate('TEST_PACKAGE');
-
-        $this->assertInstanceOf('CL\ComposerInit\Template', $template);
-
-        $this->assertEquals(
-            'clippings-package-template-971a36f/',
-            $template->getRoot()
+            $packegist->getHistory()->getLastRequest()->getUrl()
         );
     }
 
@@ -88,31 +75,32 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $command = $this
-            ->getMockBuilder('CL\ComposerInit\UseCommand')
-            ->setConstructorArgs([new ClientMock()])
-            ->setMethods(['getTemplate', 'getPrompts'])
-            ->getMock();
-
         $template = $this
             ->getMockBuilder('CL\ComposerInit\Template')
             ->disableOriginalConstructor()
-            ->setMethods(['getPromptNames', 'putInto'])
+            ->setMethods(['getPromptNames', 'putInto', 'open'])
             ->getMock();
 
         $prompts = $this
-            ->getMockBuilder('CL\ComposerInit\Prompts')
+            ->getMockBuilder('CL\ComposerInit\Prompt\Prompts')
+            ->disableOriginalConstructor()
             ->setMethods(['getValues'])
             ->getMock();
 
-        $command
-            ->method('getTemplate')
-            ->with('TEST_PACKAGE')
-            ->willReturn($template);
+        $command = $this
+            ->getMockBuilder('CL\ComposerInit\UseCommand')
+            ->setConstructorArgs([$template, $prompts, new ClientMock()])
+            ->setMethods(['getTemplate', 'getPrompts', 'getPackageZipUrl'])
+            ->getMock();
 
         $command
-            ->method('getPrompts')
-            ->willReturn($prompts);
+            ->method('getPackageZipUrl')
+            ->with('TEST_PACKAGE')
+            ->willReturn('TEST_URL');
+
+        $template
+            ->method('open')
+            ->with('TEST_URL');
 
         $template
             ->method('getPromptNames')
@@ -130,7 +118,6 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
                 $this->isInstanceOf('Symfony\Component\Console\Helper\DialogHelper')
             )
             ->willReturn(['author_name' => 'VAL1', 'title' => 'VAL2']);
-
 
         $console = new Application();
         $console->add($command);

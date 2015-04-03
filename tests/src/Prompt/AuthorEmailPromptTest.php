@@ -4,7 +4,7 @@ namespace CL\ComposerInit\Test\Prompt;
 
 use PHPUnit_Framework_TestCase;
 use CL\ComposerInit\Prompt\AuthorEmailPrompt;
-use CL\ComposerInit\Prompt\GitConfig;
+use CL\ComposerInit\GitConfig;
 use Symfony\Component\Console\Output\NullOutput;
 use Closure;
 use RuntimeException;
@@ -32,7 +32,7 @@ class AuthorEmailPromptTest extends PHPUnit_Framework_TestCase
     public function testGetDefault()
     {
         $gitConfig = $this
-            ->getMockBuilder('CL\ComposerInit\Prompt\GitConfig')
+            ->getMockBuilder('CL\ComposerInit\GitConfig')
             ->getMock();
 
         $gitConfig

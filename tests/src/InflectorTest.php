@@ -1,12 +1,12 @@
 <?php
 
-namespace CL\ComposerInit\Prompt\Test;
+namespace CL\ComposerInit\Test;
 
-use CL\ComposerInit\Prompt\Inflector;
+use CL\ComposerInit\Inflector;
 use PHPUnit_Framework_TestCase;
 
 /**
- * @coversDefaultClass CL\ComposerInit\Prompt\Inflector
+ * @coversDefaultClass CL\ComposerInit\Inflector
  */
 class InflectorTest extends PHPUnit_Framework_TestCase
 {
