@@ -38,7 +38,7 @@ class Template
     private $github;
 
     /**
-     * @param string $url
+     * @param Client $github
      */
     public function __construct(Client $github)
     {

@@ -35,8 +35,7 @@ class GitConfig
         $origin = $this->get('remote.origin.url');
 
         if ($origin) {
-            if (preg_match('/^.*github.com[:\/](.*).git$/', $origin, $matches));
-            {
+            if (preg_match('/^.*github.com[:\/](.*).git$/', $origin, $matches)) {
                 return $matches[1];
             }
         }
