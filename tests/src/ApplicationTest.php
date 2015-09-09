@@ -31,5 +31,31 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
             'CL\ComposerInit\TokenCommand',
             $app->get('token')
         );
+
+        $this->assertEquals(
+            null,
+            $app->get('token')->getToken()->get(),
+            'Should not have a token saved at default location'
+        );
+    }
+
+    /**
+     * @covers ::__construct
+     */
+    public function testConstructWithToken()
+    {
+        $file = __DIR__.'/composer-token-test';
+
+        file_put_contents($file, 'TEST_APP_TOKEN');
+
+        $app = new Application($file);
+
+        $this->assertEquals(
+            'TEST_APP_TOKEN',
+            $app->get('token')->getToken()->get(),
+            'Token content should be from the passed file'
+        );
+
+        unlink($file);
     }
 }

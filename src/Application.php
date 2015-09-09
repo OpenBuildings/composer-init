@@ -14,12 +14,12 @@ class Application extends \Symfony\Component\Console\Application
      */
     private $app;
 
-    public function __construct()
+    public function __construct($tokenFile = '~/.composer-init')
     {
         parent::__construct('Composer Init', '0.3');
 
         $packegist = new Client(['base_url' => 'https://packagist.org']);
-        $token = new Token($_SERVER['HOME'].'/.composer-init');
+        $token = new Token($tokenFile);
 
         $github = new Client(['base_url' => 'https://api.github.com']);
 
