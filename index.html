@@ -1,1 +1,200 @@
-My GitHub Page
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Composer-init by clippings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Composer-init</h1>
+      <h2 class="project-tagline">Initialize a composer package based on a template package</h2>
+      <a href="https://github.com/clippings/composer-init" class="btn">View on GitHub</a>
+      <a href="https://github.com/clippings/composer-init/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/clippings/composer-init/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="composer-init" class="anchor" href="#composer-init" aria-hidden="true"><span class="octicon octicon-link"></span></a>Composer Init</h1>
+
+<p><a href="https://travis-ci.org/clippings/composer-init"><img src="https://travis-ci.org/clippings/composer-init.png?branch=master" alt="Build Status"></a>
+<a href="https://scrutinizer-ci.com/g/clippings/composer-init/"><img src="https://scrutinizer-ci.com/g/clippings/composer-init/badges/quality-score.png?s=a1404674f68c4894d651150caf4985aa59597515" alt="Scrutinizer Code Quality"></a>
+<a href="https://scrutinizer-ci.com/g/clippings/composer-init/"><img src="https://scrutinizer-ci.com/g/clippings/composer-init/badges/coverage.png?s=3d5fb55c42c6887679915320658b543ed935e00a" alt="Code Coverage"></a>
+<a href="https://packagist.org/packages/clippings/composer-init"><img src="https://poser.pugx.org/clippings/composer-init/v/stable.png" alt="Latest Stable Version"></a></p>
+
+<p>Tired of creating the same directory structure every time you start a new project? Tired of constantly modifying files if you clone github template repo? This command line tool allows you to initialize a project based on a template, and fills in values in the template.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Install via composer</p>
+
+<pre><code>$ composer global require clippings/composer-init
+</code></pre>
+
+<p>This will install it to your user's global composer. If you already have ~/.composer/vendor/bin/ in your PATH you can start using it with</p>
+
+<pre><code>$ composer-init
+</code></pre>
+
+<p>otherwise you can do it by calling directly</p>
+
+<pre><code>$ ~/.composer/vendor/bin/composer-init
+</code></pre>
+
+<h2>
+<a id="basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Usage</h2>
+
+<ul>
+<li>
+<code>composer-init search</code> to discover templates</li>
+<li>
+<code>composer-init use {template-package}</code> in an empty folder to use a template</li>
+<li>
+<code>composer-init token {token}</code> set a github token for downloading past the <a href="https://developer.github.com/v3/rate_limit/">github rate limit</a>
+</li>
+</ul>
+
+<p><code>composer-init</code> Gets a lot of defaults from github repo &amp; organization, so it is best to create an empty repo in github, clone it locally and run "composer-init use ..." there.</p>
+
+<h2>
+<a id="creating-templates" class="anchor" href="#creating-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating Templates</h2>
+
+<p>A composer-init template must be published to packegist, (therefore have a composer.json file) and have a prompts.json file to describe which of the available prompts will be used. The package should be published as "type": "composer-init-template". All the code for the template is present in the "root" directory.</p>
+
+<p>example composer.json file:</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>clippings/package-template<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Package Template<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>license<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>MIT<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>composer-init-template<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>authors<span class="pl-pds">"</span></span>: [
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>John Smith<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>email<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>john@example.com<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>role<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Author<span class="pl-pds">"</span></span>
+        }
+    ]
+}</pre></div>
+
+<p>example prompts.json file:</p>
+
+<div class="highlight highlight-json"><pre>[
+    <span class="pl-s"><span class="pl-pds">"</span>package_name<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>php_namespace<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>author_name<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>author_email<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>copyright<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>bugs<span class="pl-pds">"</span></span>
+]</pre></div>
+
+<p>This states that this package will use these prompts, gather their input and then fill in the placeholders inside all the files in the root folder.</p>
+
+<p>Here's an example template:
+<a href="https://github.com/clippings/package-template/">https://github.com/clippings/package-template/</a></p>
+
+<h2>
+<a id="prompts" class="anchor" href="#prompts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prompts</h2>
+
+<p>All prompts try to guess a reasonable default, but ask the user to confirm/correct its value.</p>
+
+<h4>
+<a id="author_email" class="anchor" href="#author_email" aria-hidden="true"><span class="octicon octicon-link"></span></a>author_email</h4>
+
+<p>The email of the author, by default uses <code>git config user.email</code>. You can set it yourself with <code>git config user.email {my email}</code> or globally with <code>git config --global user.email {my email}</code>. As stated in <a href="https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup">first time git setup</a> guide</p>
+
+<p>Adds <code>{% author_email %}</code> template variable</p>
+
+<h4>
+<a id="author_name" class="anchor" href="#author_name" aria-hidden="true"><span class="octicon octicon-link"></span></a>author_name</h4>
+
+<p>The name of the author, by default uses <code>git config user.name</code>. You can set it yourself with <code>git config user.name {my name}</code> or globally with <code>git config --global user.name {my name}</code>. As stated in <a href="https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup">first time git setup</a> guide</p>
+
+<p>Adds <code>{% author_name %}</code> template variable</p>
+
+<h4>
+<a id="bugs" class="anchor" href="#bugs" aria-hidden="true"><span class="octicon octicon-link"></span></a>bugs</h4>
+
+<p>The url for submitting new issues. By default gets the repo's gitub issues url. e.g. <code>https://github.com/clippings/composer-init/issues</code></p>
+
+<p>Adds <code>{% bugs %}</code> template variable</p>
+
+<h4>
+<a id="copyright" class="anchor" href="#copyright" aria-hidden="true"><span class="octicon octicon-link"></span></a>copyright</h4>
+
+<p>Tries to guess the copyright holder by going through</p>
+
+<ul>
+<li>github organization</li>
+<li>github user</li>
+<li>git user</li>
+<li>file owner</li>
+</ul>
+
+<p>And exposes it as "{year}, {copyright_entity}" - where year is the current year and copyright_entity is the guessed value. You can also get to the <code>copyright_entity</code> value separately</p>
+
+<p>Adds <code>{% copyright %}</code> template variable
+Adds <code>{% copyright_entity %}</code> template variable</p>
+
+<h4>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>description</h4>
+
+<p>The description of the github repo.</p>
+
+<p>Adds <code>{% description %}</code> template variable</p>
+
+<h4>
+<a id="package_name" class="anchor" href="#package_name" aria-hidden="true"><span class="octicon octicon-link"></span></a>package_name</h4>
+
+<p>The github package name e.g. <code>clippings/composer-init</code></p>
+
+<p>Adds <code>{% package_name %}</code> template variable</p>
+
+<h4>
+<a id="php_namespace" class="anchor" href="#php_namespace" aria-hidden="true"><span class="octicon octicon-link"></span></a>php_namespace</h4>
+
+<p>Tires to guess the package name, using github's organization/username and repo name. So <code>clippings/composer-init</code> would be converted to <code>Clippings\ComposerInit</code>. It also tries to guess the name with initials, so in this case it would also give the option of <code>CL\ComposerInit</code>. These can be cycled with tab completion or auto-completed when entering</p>
+
+<p>Adds <code>{% php_namespace %}</code> template variable
+Adds <code>{% php_namespace_escaped %}</code> template variable where all "\" characters are converted to "\\"</p>
+
+<h4>
+<a id="slack_notification" class="anchor" href="#slack_notification" aria-hidden="true"><span class="octicon octicon-link"></span></a>slack_notification</h4>
+
+<p>Get a "secure slack notification token". basically asks for a value and returns "slack:\n    secure: {value}\n", so you can easily add slack to your .travis.yml notifications</p>
+
+<h4>
+<a id="title" class="anchor" href="#title" aria-hidden="true"><span class="octicon octicon-link"></span></a>title</h4>
+
+<p>The title of the github repo.</p>
+
+<p>Adds <code>{% title %}</code> template variable</p>
+
+<h2>
+<a id="credits" class="anchor" href="#credits" aria-hidden="true"><span class="octicon octicon-link"></span></a>Credits</h2>
+
+<p>Inspired by <a href="https://github.com/gruntjs/grunt-init">grunt-init</a></p>
+
+<p>Copyright (c) 2014-2015, Clippings Ltd. Developed by <a href="https://github.com/ivank">Ivan Kerin</a> as part of <a href="http://clippings.com">clippings.com</a></p>
+
+<p>Under BSD-3-Clause license, read LICENSE file.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/clippings/composer-init">Composer-init</a> is maintained by <a href="https://github.com/clippings">clippings</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
