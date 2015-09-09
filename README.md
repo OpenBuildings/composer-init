@@ -74,24 +74,35 @@ example prompts.json file:
 ```
 This states that this package will use these prompts, gather their input and then fill in the placeholders inside all the files in the root folder.
 
+
+Here's an example template:
+https://github.com/clippings/package-template/
+
 Prompts
 -------
 
 All prompts try to guess a reasonable default, but ask the user to confirm/correct its value.
 
-**author\_email**
-The email of the author, by default uses `git config user.email`. You can set it yourself with `git config user.email {my email}` or globally with `git config --global user.email {my email}`. As stated in [first time git setup](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup) gide
+#### author\_email
+
+The email of the author, by default uses `git config user.email`. You can set it yourself with `git config user.email {my email}` or globally with `git config --global user.email {my email}`. As stated in [first time git setup](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup) guide
+
 Adds `{% author_email %}` template variable
 
-**author\_name**
-The name of the author, by default uses `git config user.name`. You can set it yourself with `git config user.name {my name}` or globally with `git config --global user.name {my name}`. As stated in [first time git setup](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup) gide
+#### author\_name
+
+The name of the author, by default uses `git config user.name`. You can set it yourself with `git config user.name {my name}` or globally with `git config --global user.name {my name}`. As stated in [first time git setup](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup) guide
+
 Adds `{% author_name %}` template variable
 
-**bugs**
+#### bugs
+
 The url for submitting new issues. By default gets the repo's gitub issues url. e.g. `https://github.com/clippings/composer-init/issues`
+
 Adds `{% bugs %}` template variable
 
-**copyright**
+#### copyright
+
 Tries to guess the copyright holder by going through
 
 - github organization
@@ -104,30 +115,37 @@ And exposes it as "{year}, {copyright\_entity}" - where year is the current year
 Adds `{% copyright %}` template variable
 Adds `{% copyright_entity %}` template variable
 
-**description**
+#### description
+
 The description of the github repo.
+
 Adds `{% description %}` template variable
 
-**package\_name**
+####  package\_name
+
 The github package name e.g. `clippings/composer-init`
+
 Adds `{% package_name %}` template variable
 
-**php\_namespace**
+#### php\_namespace
+
 Tires to guess the package name, using github's organization/username and repo name. So `clippings/composer-init` would be converted to `Clippings\ComposerInit`. It also tries to guess the name with initials, so in this case it would also give the option of `CL\ComposerInit`. These can be cycled with tab completion or auto-completed when entering
+
 Adds `{% php_namespace %}` template variable
 Adds `{% php_namespace_escaped %}` template variable where all "\\" characters are converted to "\\\\"
 
-**slack\_notification**
+#### slack\_notification
+
 Get a "secure slack notification token". basically asks for a value and returns "slack:\n    secure: {value}\n", so you can easily add slack to your .travis.yml notifications
 
-**title**
+#### title
+
 The title of the github repo.
+
 Adds `{% title %}` template variable
 
-Here's an example:
-https://github.com/clippings/package-template/
-
-## Credits
+Credits
+-------
 
 Inspired by [grunt-init](https://github.com/gruntjs/grunt-init)
 
