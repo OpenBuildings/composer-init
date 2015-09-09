@@ -24,7 +24,7 @@ class Inflector
      */
     public function title($string)
     {
-        return ucwords(self::humanize($string));
+        return ucwords($this->humanize($string));
     }
 
     /**
@@ -33,7 +33,7 @@ class Inflector
      */
     public function titlecase($string)
     {
-        return str_replace(' ', '', self::title($string));
+        return str_replace(' ', '', $this->title($string));
     }
 
     /**
@@ -42,12 +42,12 @@ class Inflector
      */
     public function initials($string)
     {
-        $title = self::title($string);
+        $title = $this->title($string);
 
         $initials = str_replace(' ', '', preg_replace('/[a-z]/', '', $title));
 
-        if (strlen($initials) == 1) {
-            $initials .= strtoupper($title[1]);
+        if (mb_strlen($initials) == 1) {
+            $initials .= mb_strtoupper($title[1]);
         }
 
         return $initials;

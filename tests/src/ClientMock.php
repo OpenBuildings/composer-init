@@ -36,10 +36,10 @@ class ClientMock extends Client
 
     public function queueResponse($fileName)
     {
-        $json = file_get_contents(__DIR__.'/../responses/'.$fileName);
+        $response = file_get_contents(__DIR__.'/../responses/'.$fileName);
 
         $this->mock->addResponse(
-            new Response(200, [], Stream::factory($json))
+            new Response(200, [], Stream::factory($response))
         );
 
         return $this;

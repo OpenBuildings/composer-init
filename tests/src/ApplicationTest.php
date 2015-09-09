@@ -26,21 +26,10 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
             'CL\ComposerInit\UseCommand',
             $app->get('use')
         );
-    }
 
-    /**
-     * @covers ::getComposerToken
-     */
-    public function testGetCompoerToken()
-    {
-        $app = new Application();
-
-        $token = $app->getComposerToken(__DIR__.'/../empty.json');
-
-        $this->assertNull($token);
-
-        $token = $app->getComposerToken(__DIR__.'/../auth.json');
-
-        $this->assertEquals('TEST_TOKEN', $token);
+        $this->assertInstanceOf(
+            'CL\ComposerInit\TokenCommand',
+            $app->get('token')
+        );
     }
 }
