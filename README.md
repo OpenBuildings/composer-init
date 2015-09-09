@@ -112,7 +112,7 @@ Tries to guess the copyright holder by going through
 
 And exposes it as "{year}, {copyright\_entity}" - where year is the current year and copyright\_entity is the guessed value. You can also get to the `copyright_entity` value separately
 
-Adds `{% copyright %}` template variable
+Adds `{% copyright %}` template variable <br>
 Adds `{% copyright_entity %}` template variable
 
 #### description
@@ -131,7 +131,7 @@ Adds `{% package_name %}` template variable
 
 Tires to guess the package name, using github's organization/username and repo name. So `clippings/composer-init` would be converted to `Clippings\ComposerInit`. It also tries to guess the name with initials, so in this case it would also give the option of `CL\ComposerInit`. These can be cycled with tab completion or auto-completed when entering
 
-Adds `{% php_namespace %}` template variable
+Adds `{% php_namespace %}` <br>
 Adds `{% php_namespace_escaped %}` template variable where all "\\" characters are converted to "\\\\"
 
 #### slack\_notification
