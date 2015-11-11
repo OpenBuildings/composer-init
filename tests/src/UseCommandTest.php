@@ -64,9 +64,11 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
         $expected = 'https://api.github.com/repos/clippings/package-template/zipball/60c22c4aa0ae0afc3b0d7176a7154a9f2a005c0c';
         $this->assertEquals($expected, $url);
 
+        $history = $packegist->getHistory();
+
         $this->assertEquals(
             '/packages/clippings/package-template.json',
-            $packegist->getHistory()->getLastRequest()->getUrl()
+            (string) $history[0]['request']->getUri()
         );
     }
 

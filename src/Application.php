@@ -18,14 +18,16 @@ class Application extends \Symfony\Component\Console\Application
     {
         parent::__construct('Composer Init', '0.3');
 
-        $packegist = new Client(['base_url' => 'https://packagist.org']);
+        $packegist = new Client(['base_uri' => 'https://packagist.org']);
         $token = new Token($tokenFile);
 
-        $github = new Client(['base_url' => 'https://api.github.com']);
+        $githubOptions = ['base_uri' => 'https://api.github.com'];
 
         if (null !== $token->get()) {
-            $github->setDefaultOption('query/access_token', $token->get());
+            $githubOptions['query']['access_token'] = $token->get();
         }
+
+        $github = new Client($githubOptions);
 
         $gitConfig = new GitConfig();
         $inflector = new Inflector();

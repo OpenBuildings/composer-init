@@ -43,9 +43,11 @@ class SearchCommandTest extends PHPUnit_Framework_TestCase
         ];
         $this->assertEquals($expected, $templates);
 
+        $history = $client->getHistory();
+
         $this->assertEquals(
             '/packages/list.json?type=composer-init-template',
-            $client->getHistory()->getLastRequest()->getUrl()
+            (string) $history[0]['request']->getUri()
         );
     }
 

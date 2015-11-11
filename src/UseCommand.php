@@ -119,9 +119,8 @@ class UseCommand extends Command
      */
     public function getPackageZipUrl($packageName)
     {
-        $package = $this->packagist
-            ->get("/packages/{$packageName}.json")
-            ->json();
+        $response = $this->packagist->get("/packages/{$packageName}.json");
+        $package = json_decode($response->getBody(), true);
 
         return $package['package']['versions']['dev-master']['dist']['url'];
     }

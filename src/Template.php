@@ -3,6 +3,7 @@
 namespace CL\ComposerInit;
 
 use ZipArchive;
+use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Client;
 
 /**
@@ -45,12 +46,12 @@ class Template
         $this->github = $github;
     }
 
-    public function open($url)
+    public function open($uri)
     {
         $this->zipFile = tmpfile();
         $meta = stream_get_meta_data($this->zipFile);
 
-        $this->github->get($url, ['save_to' => $meta['uri']]);
+        $this->github->get($uri, [RequestOptions::SINK => $meta['uri']]);
 
         $this->zip = new ZipArchive();
         $this->zip->open($meta['uri'], ZIPARCHIVE::CHECKCONS);

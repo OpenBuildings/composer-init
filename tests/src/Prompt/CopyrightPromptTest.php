@@ -114,10 +114,10 @@ class CopyrightPromptTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $prompt->getDefaults());
 
-        $requests = $github->getHistory()->getRequests();
-        $this->assertEquals('/repos/octocat/Hello-World', $requests[0]->getUrl());
-        $this->assertEquals('/orgs/github', $requests[1]->getUrl());
-        $this->assertEquals('/users/octocat', $requests[2]->getUrl());
+        $history = $github->getHistory();
+        $this->assertEquals('/repos/octocat/Hello-World', (string) $history[0]['request']->getUri());
+        $this->assertEquals('/orgs/github', (string) $history[1]['request']->getUri());
+        $this->assertEquals('/users/octocat', (string) $history[2]['request']->getUri());
     }
 
     /**

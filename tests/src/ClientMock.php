@@ -2,31 +2,34 @@
 
 namespace CL\ComposerInit\Test;
 
-use GuzzleHttp\Subscriber\Mock;
-use GuzzleHttp\Subscriber\History;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\Stream;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Client;
 
 class ClientMock extends Client
 {
-    private $history;
+    private $container = [];
     private $mock;
 
     public function __construct()
     {
-        parent::__construct();
+        $history = Middleware::history($this->container);
 
-        $this->mock = new Mock();
-        $this->history = new History();
+        $this->mock = new MockHandler();
 
-        $this->getEmitter()->attach($this->history);
-        $this->getEmitter()->attach($this->mock);
+        $stack = HandlerStack::create($this->mock);
+        // Add the history middleware to the handler stack.
+        $stack->push($history);
+
+        parent::__construct(['handler' => $stack]);
     }
 
     public function getHistory()
     {
-        return $this->history;
+        return $this->container;
     }
 
     public function getMock()
@@ -38,8 +41,8 @@ class ClientMock extends Client
     {
         $response = file_get_contents(__DIR__.'/../responses/'.$fileName);
 
-        $this->mock->addResponse(
-            new Response(200, [], Stream::factory($response))
+        $this->mock->append(
+            new Response(200, [], Psr7\stream_for($response))
         );
 
         return $this;

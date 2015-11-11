@@ -56,9 +56,12 @@ class SearchCommand extends Command
      */
     public function getTemplates()
     {
-        $list = $this->packegist
-            ->get('/packages/list.json', ['query' => ['type' => 'composer-init-template']])
-            ->json();
+        $response = $this->packegist->get(
+            '/packages/list.json',
+            ['query' => ['type' => 'composer-init-template']]
+        );
+
+        $list = json_decode($response->getBody(), true);
 
         return (array) $list['packageNames'];
     }

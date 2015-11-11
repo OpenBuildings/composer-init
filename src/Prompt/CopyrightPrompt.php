@@ -67,14 +67,18 @@ class CopyrightPrompt implements PromptInterface
         $origin = $this->gitConfig->getOrigin();
 
         if (null !== $origin) {
-            $repo = $this->github->get("/repos/{$origin}")->json();
+            $response = $this->github->get("/repos/{$origin}");
+            $repo = json_decode($response->getBody(), true);
 
             if (isset($repo['organization'])) {
-                $organizaion = $this->github->get("/orgs/{$repo['organization']['login']}")->json();
+                $response = $this->github->get("/orgs/{$repo['organization']['login']}");
+                $organizaion = json_decode($response->getBody(), true);
                 $defaults []= $organizaion['name'];
             }
 
-            $owner = $this->github->get("/users/{$repo['owner']['login']}")->json();
+            $response = $this->github->get("/users/{$repo['owner']['login']}");
+
+            $owner = json_decode($response->getBody(), true);
             $defaults []= $owner['name'];
         }
 
