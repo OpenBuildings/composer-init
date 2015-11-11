@@ -55,8 +55,14 @@ class PackageNamePrompt implements PromptInterface
             $default
         );
 
+        $parts = explode('/', $default);
+        $owner = $parts[0];
+        $title = isset($parts[1]) ? $parts[1] : $default;
+
         return [
             'package_name' => $value,
+            'package_owner' => $owner,
+            'package_title' => $title,
         ];
     }
 }

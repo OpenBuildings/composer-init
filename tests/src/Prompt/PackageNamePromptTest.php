@@ -55,7 +55,7 @@ class PackageNamePromptTest extends PHPUnit_Framework_TestCase
 
         $prompt
             ->method('getDefault')
-            ->willReturn('PACKAGE_NAME');
+            ->willReturn('clippings/composer-init');
 
         $output = new NullOutput();
 
@@ -67,15 +67,17 @@ class PackageNamePromptTest extends PHPUnit_Framework_TestCase
             ->method('ask')
             ->with(
                 $this->identicalTo($output),
-                '<info>Package Name</info> (PACKAGE_NAME): ',
-                'PACKAGE_NAME'
+                '<info>Package Name</info> (clippings/composer-init): ',
+                'clippings/composer-init'
             )
-            ->willReturn('NEW_PACKAGE');
+            ->willReturn('clippings/composer-init');
 
         $values = $prompt->getValues($output, $dialog);
 
         $expected = [
-            'package_name' => 'NEW_PACKAGE',
+            'package_name' => 'clippings/composer-init',
+            'package_owner' => 'clippings',
+            'package_title' => 'composer-init',
         ];
 
         $this->assertEquals($expected, $values);
