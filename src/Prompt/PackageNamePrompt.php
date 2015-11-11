@@ -63,6 +63,25 @@ class PackageNamePrompt implements PromptInterface
             'package_name' => $value,
             'package_owner' => $owner,
             'package_title' => $title,
+            'package_classname' => $this->toCamelCase($title),
         ];
+    }
+
+    /**
+     * Translates a string with underscores
+     * into camel case (e.g. first-name -> FirstName)
+     *
+     * @param string $text String in underscore format
+     * @return string $text translated into camel caps
+     */
+    function toCamelCase($text)
+    {
+        $text[0] = strtoupper($text[0]);
+
+        $capitalise = function ($word) {
+            return strtoupper($word[1]);
+        };
+
+        return preg_replace_callback('/[_\ \-]([a-zA-Z0-9])/', $capitalise, $text);
     }
 }

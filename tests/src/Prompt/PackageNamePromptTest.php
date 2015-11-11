@@ -42,6 +42,32 @@ class PackageNamePromptTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('TEST', $prompt->getDefault());
     }
 
+    public function dataToCamelCase()
+    {
+        return [
+            ['test1', 'Test1'],
+            ['test-1', 'Test1'],
+            ['clippings-layout', 'ClippingsLayout'],
+            ['clippings_layout', 'ClippingsLayout'],
+            ['to_be_great', 'ToBeGreat'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataToCamelCase
+     * @covers ::toCamelCase
+     */
+    public function testToCamelCase($text, $expected)
+    {
+        $prompt = $this
+            ->getMockBuilder('CL\ComposerInit\Prompt\PackageNamePrompt')
+            ->disableOriginalConstructor()
+            ->setMethods(['getDefault'])
+            ->getMock();
+
+        $this->assertEquals($expected, $prompt->toCamelCase($text));
+    }
+
     /**
      * @covers ::getValues
      */
@@ -78,6 +104,7 @@ class PackageNamePromptTest extends PHPUnit_Framework_TestCase
             'package_name' => 'clippings/composer-init',
             'package_owner' => 'clippings',
             'package_title' => 'composer-init',
+            'package_classname' => 'ComposerInit',
         ];
 
         $this->assertEquals($expected, $values);
