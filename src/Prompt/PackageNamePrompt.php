@@ -5,7 +5,6 @@ namespace CL\ComposerInit\Prompt;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\DialogHelper;
 use CL\ComposerInit\GitConfig;
-use RuntimeException;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -33,7 +32,7 @@ class PackageNamePrompt implements PromptInterface
     }
 
     /**
-     * @return array
+     * @return string|null
      */
     public function getDefault()
     {
@@ -74,7 +73,7 @@ class PackageNamePrompt implements PromptInterface
      * @param string $text String in underscore format
      * @return string $text translated into camel caps
      */
-    function toCamelCase($text)
+    public function toCamelCase($text)
     {
         $text[0] = strtoupper($text[0]);
 
