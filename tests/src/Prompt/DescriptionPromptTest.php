@@ -70,10 +70,10 @@ class DescriptionPromptTest extends PHPUnit_Framework_TestCase
             'This your first repo!',
             $prompt->getDefault()
         );
-        $request = $github->getHistory()->getLastRequest();
+        $history = $github->getHistory();
         $this->assertEquals(
             '/repos/octocat/Hello-World',
-            $request->getUrl()
+            (string) $history[0]['request']->getUri()
         );
     }
 

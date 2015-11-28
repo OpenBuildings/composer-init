@@ -37,9 +37,11 @@ class TemplateTest extends PHPUnit_Framework_TestCase
 
         $template->open('TEST_URL');
 
+        $history = $client->getHistory();
+
         $this->assertEquals(
             'TEST_URL',
-            $client->getHistory()->getLastRequest()->getUrl()
+            (string) $history[0]['request']->getUri()
         );
 
         $zip = $template->getZip();
