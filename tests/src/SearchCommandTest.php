@@ -14,7 +14,7 @@ class SearchCommandTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers ::__construct
-     * @covers ::getPackegist
+     * @covers ::getPackagist
      * @covers ::configure
      */
     public function testConstruct()
@@ -22,7 +22,7 @@ class SearchCommandTest extends PHPUnit_Framework_TestCase
         $client = new ClientMock();
         $command = new SearchCommand($client);
 
-        $this->assertSame($client, $command->getPackegist());
+        $this->assertSame($client, $command->getPackagist());
     }
 
     /**

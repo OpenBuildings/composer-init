@@ -14,7 +14,7 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @covers ::__construct
-     * @covers ::getPackegist
+     * @covers ::getPackagist
      * @covers ::getPrompts
      * @covers ::getTemplate
      * @covers ::configure
@@ -31,13 +31,13 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $packegist = new ClientMock();
+        $packagist = new ClientMock();
 
-        $command = new UseCommand($template, $prompts, $packegist);
+        $command = new UseCommand($template, $prompts, $packagist);
 
         $this->assertSame($template, $command->getTemplate());
         $this->assertSame($prompts, $command->getPrompts());
-        $this->assertSame($packegist, $command->getPackegist());
+        $this->assertSame($packagist, $command->getPackagist());
     }
 
     /**
@@ -55,16 +55,16 @@ class UseCommandTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $packegist = new ClientMock();
-        $packegist->queueResponse('packagist/package.json');
+        $packagist = new ClientMock();
+        $packagist->queueResponse('packagist/package.json');
 
-        $command = new UseCommand($template, $prompts, $packegist);
+        $command = new UseCommand($template, $prompts, $packagist);
 
         $url = $command->getPackageZipUrl('clippings/package-template');
         $expected = 'https://api.github.com/repos/clippings/package-template/zipball/60c22c4aa0ae0afc3b0d7176a7154a9f2a005c0c';
         $this->assertEquals($expected, $url);
 
-        $history = $packegist->getHistory();
+        $history = $packagist->getHistory();
 
         $this->assertEquals(
             '/packages/clippings/package-template.json',

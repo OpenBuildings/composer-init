@@ -38,7 +38,7 @@ Basic Usage
 Creating Templates
 ------------------
 
-A composer-init template must be published to packegist, (therefore have a composer.json file) and have a prompts.json file to describe which of the available prompts will be used. The package should be published as "type": "composer-init-template". All the code for the template is present in the "root" directory.
+A composer-init template must be published to Packagist.org, (therefore have a composer.json file) and have a prompts.json file to describe which of the available prompts will be used. The package should be published as "type": "composer-init-template". All the code for the template is present in the "root" directory.
 
 example composer.json file:
 
