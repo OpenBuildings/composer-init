@@ -18,7 +18,7 @@ class Application extends \Symfony\Component\Console\Application
     {
         parent::__construct('Composer Init', '0.3');
 
-        $packegist = new Client(['base_uri' => 'https://packagist.org']);
+        $packagist = new Client(['base_uri' => 'https://packagist.org']);
         $token = new Token($tokenFile);
 
         $githubOptions = ['base_uri' => 'https://api.github.com'];
@@ -34,8 +34,8 @@ class Application extends \Symfony\Component\Console\Application
         $prompts = new Prompts($gitConfig, $github, $inflector);
         $template = new Template($github);
 
-        $this->add(new SearchCommand($packegist));
-        $this->add(new UseCommand($template, $prompts, $packegist));
+        $this->add(new SearchCommand($packagist));
+        $this->add(new UseCommand($template, $prompts, $packagist));
         $this->add(new TokenCommand($token));
     }
 }

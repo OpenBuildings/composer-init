@@ -48,7 +48,7 @@ class UseCommand extends Command
     /**
      * @return Client
      */
-    public function getPackegist()
+    public function getPackagist()
     {
         return $this->packagist;
     }

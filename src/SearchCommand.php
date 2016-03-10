@@ -18,24 +18,24 @@ class SearchCommand extends Command
     /**
      * @var Client
      */
-    private $packegist;
+    private $packagist;
 
     /**
-     * @param Client $packegist
+     * @param Client $packagist
      */
-    public function __construct(Client $packegist)
+    public function __construct(Client $packagist)
     {
         parent::__construct();
 
-        $this->packegist = $packegist;
+        $this->packagist = $packagist;
     }
 
     /**
      * @return Client
      */
-    public function getPackegist()
+    public function getPackagist()
     {
-        return $this->packegist;
+        return $this->packagist;
     }
 
     protected function configure()
@@ -56,7 +56,7 @@ class SearchCommand extends Command
      */
     public function getTemplates()
     {
-        $response = $this->packegist->get(
+        $response = $this->packagist->get(
             '/packages/list.json',
             ['query' => ['type' => 'composer-init-template']]
         );
